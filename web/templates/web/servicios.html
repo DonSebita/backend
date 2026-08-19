@@ -1,0 +1,54 @@
+{% extends "web/base.html" %}
+
+{% block title %}Servicios | TaskFlow{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>Nuestros Servicios</h1>
+
+        <p>
+            Nuestra plataforma ofrece herramientas para administrar
+            usuarios, proyectos y tareas mediante una API REST.
+        </p>
+
+
+        <div class="cards">
+
+            <article class="card">
+                <h3>API REST</h3>
+
+                <p>
+                    Consulta los endpoints disponibles para interactuar
+                    con los datos del sistema.
+                </p>
+
+                <a href="/api/" class="btn btn-primary">
+                    Acceder a la API
+                </a>
+            </article>
+
+
+            <article class="card">
+                <h3>Administración</h3>
+
+                <p>
+                    Gestiona los registros del sistema mediante
+                    el panel administrativo de Django.
+                </p>
+
+                <a href="/admin/" class="btn btn-primary">
+                    Acceder al Admin
+                </a>
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

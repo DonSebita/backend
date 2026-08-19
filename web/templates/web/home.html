@@ -1,0 +1,85 @@
+{% extends "web/base.html" %}
+
+{% block title %}Inicio | TaskFlow{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="container hero-content">
+
+        <span class="badge">
+            Gestión de proyectos
+        </span>
+
+        <h1>
+            Organiza tus proyectos de forma simple
+        </h1>
+
+        <p>
+            TaskFlow es una plataforma diseñada para facilitar
+            la administración de usuarios, proyectos y tareas
+            mediante una solución construida con Django REST Framework.
+        </p>
+
+        <div class="buttons">
+
+            <a href="{% url 'servicios' %}" class="btn btn-primary">
+                Conocer servicios
+            </a>
+
+            <a href="/api/" class="btn btn-secondary">
+                Explorar API
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="info">
+
+    <div class="container">
+
+        <h2>¿Qué puedes hacer?</h2>
+
+        <div class="cards">
+
+            <article class="card">
+                <h3>Usuarios</h3>
+
+                <p>
+                    Gestiona los usuarios registrados dentro
+                    de la plataforma.
+                </p>
+            </article>
+
+
+            <article class="card">
+                <h3>Proyectos</h3>
+
+                <p>
+                    Crea y administra proyectos asociados
+                    a diferentes usuarios.
+                </p>
+            </article>
+
+
+            <article class="card">
+                <h3>Tareas</h3>
+
+                <p>
+                    Organiza las tareas necesarias para
+                    completar cada proyecto.
+                </p>
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}s

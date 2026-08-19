@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Sistema DRF{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container navbar">
+
+            <a href="{% url 'home' %}" class="logo">
+                TaskFlow
+            </a>
+
+            <nav class="nav-links">
+                <a href="{% url 'home' %}">Inicio</a>
+                <a href="{% url 'quienes_somos' %}">Quiénes Somos</a>
+                <a href="{% url 'servicios' %}">Servicios</a>
+                <a href="{% url 'contacto' %}">Contacto</a>
+                <a href="{% url 'programmers' %}">
+                    Programadores
+                </a>
+                <a href="/api/" class="nav-api">
+                    API
+                </a>
+
+                <a href="/admin/" class="nav-admin">
+                    Admin
+                </a>
+            </nav>
+
+        </div>
+    </header>   
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Proyecto Django REST Framework</p>
+    </footer>
+
+    <script src="{% static 'web/js/main.js' %}"></script>
+    
+</body>
+</html>

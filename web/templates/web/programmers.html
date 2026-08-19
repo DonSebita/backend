@@ -1,0 +1,310 @@
+{% extends "web/base.html" %}
+
+{% block title %}
+Programadores
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>Gestión de Programadores</h1>
+
+        <p>
+            Administra los programadores registrados en el sistema.
+        </p>
+
+
+        <!-- CREAR PROGRAMADOR -->
+
+        <div class="form-card">
+
+            <h2>Agregar programador</h2>
+
+            <form
+                method="POST"
+                action="{% url 'programmer_create' %}"
+                class="programmer-form"
+            >
+
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Nombre completo</label>
+
+                    <input
+                        type="text"
+                        name="fullname"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Nickname</label>
+
+                    <input
+                        type="text"
+                        name="nickname"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Lenguaje</label>
+
+                    <input
+                        type="text"
+                        name="language"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Edad</label>
+
+                    <input
+                        type="number"
+                        name="age"
+                        min="1"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group checkbox-group">
+
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="is_active"
+                            checked
+                        >
+
+                        Activo
+                    </label>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Agregar programador
+                </button>
+
+            </form>
+
+        </div>
+
+
+
+        <!-- TABLA -->
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Nickname</th>
+                        <th>Lenguaje</th>
+                        <th>Edad</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for programmer in programmers %}
+
+                    <tr
+                        class="programmer-row"
+                        data-id="{{ programmer.id }}"
+                    >
+
+                        <form
+                            method="POST"
+                            action="{% url 'programmer_update' programmer.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <td>
+                                {{ programmer.id }}
+                            </td>
+
+
+                            <td>
+
+                                <span class="display-value">
+                                    {{ programmer.fullname }}
+                                </span>
+
+                                <input
+                                    class="edit-input"
+                                    type="text"
+                                    name="fullname"
+                                    value="{{ programmer.fullname }}"
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="display-value">
+                                    {{ programmer.nickname }}
+                                </span>
+
+                                <input
+                                    class="edit-input"
+                                    type="text"
+                                    name="nickname"
+                                    value="{{ programmer.nickname }}"
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="display-value">
+                                    {{ programmer.language }}
+                                </span>
+
+                                <input
+                                    class="edit-input"
+                                    type="text"
+                                    name="language"
+                                    value="{{ programmer.language }}"
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="display-value">
+                                    {{ programmer.age }}
+                                </span>
+
+                                <input
+                                    class="edit-input"
+                                    type="number"
+                                    name="age"
+                                    value="{{ programmer.age }}"
+                                    min="1"
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="display-value">
+
+                                    {% if programmer.is_active %}
+                                        Sí
+                                    {% else %}
+                                        No
+                                    {% endif %}
+
+                                </span>
+
+
+                                <select
+                                    class="edit-input"
+                                    name="is_active"
+                                >
+
+                                    <option
+                                        value="True"
+                                        {% if programmer.is_active %}
+                                        selected
+                                        {% endif %}
+                                    >
+                                        Sí
+                                    </option>
+
+                                    <option
+                                        value="False"
+                                        {% if not programmer.is_active %}
+                                        selected
+                                        {% endif %}
+                                    >
+                                        No
+                                    </option>
+
+                                </select>
+
+                            </td>
+
+
+                            <td class="actions">
+
+                                <button
+                                    type="submit"
+                                    class="btn-save"
+                                >
+                                    Guardar
+                                </button>
+
+                        </form>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'programmer_delete' programmer.id %}"
+                            class="delete-form"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn-delete"
+                            >
+                                Eliminar
+                            </button>
+
+                        </form>
+
+                            </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7">
+                            No existen programadores registrados.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

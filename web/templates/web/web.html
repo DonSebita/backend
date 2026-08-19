@@ -1,0 +1,57 @@
+{% extends "web/base.html" %}
+
+{% block title %}Programadores | TaskFlow{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>Programadores</h1>
+
+        <p>
+            Lista de programadores registrados en el sistema.
+        </p>
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for programmer in programmers %}
+
+                    <tr>
+                        <td>{{ programmer.id }}</td>
+                        <td>{{ programmer.name }}</td>
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="2">
+                            No existen programadores registrados.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
