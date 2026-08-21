@@ -1,0 +1,207 @@
+{% extends "estudiantes/base_estudiantes.html" %}
+
+{% block title %}
+    Salones
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>Salones</h1>
+
+        <p>
+            Administra los salones registrados.
+            Haz doble clic sobre un salón para modificarlo.
+        </p>
+
+        <div class="buttons">
+
+            <a
+                href="{% url 'crear_salon' %}"
+                class="btn btn-primary"
+            >
+                + Nuevo salón
+            </a>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Número de Salón</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for salon in salones %}
+
+                    <tr ondblclick="editarFila(this)">
+
+                        <!-- NÚMERO DE SALÓN -->
+
+                        <td>
+
+                            <span class="view-value">
+                                {{ salon.id_salon }}
+                            </span>
+
+                            <input
+                                type="number"
+                                name="id_salon"
+                                value="{{ salon.id_salon }}"
+                                class="edit-input"
+                            >
+
+                        </td>
+
+
+                        <!-- ACCIONES -->
+
+                        <td class="actions">
+
+                            <!-- GUARDAR -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'editar_salon' salon.id_salon %}"
+                                class="edit-form"
+                            >
+
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="id_salon"
+                                    class="form-id-salon"
+                                    value="{{ salon.id_salon }}"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="btn-save"
+                                >
+                                    Guardar
+                                </button>
+
+                            </form>
+
+
+                            <!-- ELIMINAR -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'eliminar_salon' salon.id_salon %}"
+                                class="delete-form"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-delete"
+                                    onclick="
+                                        return confirm(
+                                            '¿Seguro que quieres eliminar este salón?'
+                                        );
+                                    "
+                                >
+                                    Eliminar
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="2">
+                            No hay salones registrados.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+function editarFila(fila) {
+
+    const input =
+        fila.querySelector(".edit-input");
+
+    const valor =
+        fila.querySelector(".view-value");
+
+    const guardar =
+        fila.querySelector(".btn-save");
+
+    const formulario =
+        fila.querySelector(".edit-form");
+
+    const idSalon =
+        fila.querySelector(".form-id-salon");
+
+
+    /*
+     * Mostrar input
+     */
+
+    input.style.display = "block";
+
+
+    /*
+     * Ocultar valor normal
+     */
+
+    valor.style.display = "none";
+
+
+    /*
+     * Mostrar botón Guardar
+     */
+
+    guardar.style.display = "inline-block";
+
+
+    /*
+     * Actualizar valor antes de enviar
+     */
+
+    formulario.addEventListener("submit", function () {
+
+        idSalon.value = input.value;
+
+    });
+
+}
+
+</script>
+
+{% endblock %}

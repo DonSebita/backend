@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+            Inicio
+        {% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="container">
+
+            <nav class="navbar">
+
+                <a href="{% url 'home' %}" class="logo">
+                    Mi Sitio
+                </a>
+
+                <div class="nav-links">
+
+                    <a href="{% url 'home' %}">
+                        Inicio
+                    </a>
+
+                    <a href="{% url 'quienes_somos' %}">
+                        Quiénes somos
+                    </a>
+
+                    <a href="{% url 'servicios' %}">
+                        Servicios
+                    </a>
+
+                    <a href="{% url 'contacto' %}">
+                        Contacto
+                    </a>
+
+                    <a href="{% url 'estudiantes_home' %}" class="nav-api">
+                        Estudiantes
+                    </a>
+
+                </div>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+    <main>
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</body>
+
+</html>
