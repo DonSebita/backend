@@ -1,0 +1,64 @@
+{% extends "estudiantes/base_estudiantes.html" %}
+
+{% block title %}
+    Crear Clase
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>Nueva Clase</h1>
+
+        <div class="form-card">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                    <label for="nombre_clase">
+                        Nombre de la Clase
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombre_clase"
+                        name="nombre_clase"
+                        placeholder="Ej: Matemáticas"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+                <div class="buttons">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Guardar
+                    </button>
+
+                    <a
+                        href="{% url 'lista_clases' %}"
+                        class="btn btn-secondary"
+                    >
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

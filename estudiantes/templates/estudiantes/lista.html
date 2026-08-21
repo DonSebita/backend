@@ -1,0 +1,337 @@
+{% extends "estudiantes/base_estudiantes.html" %}
+
+{% block title %}
+    Estudiantes
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <div class="students-header">
+
+            <h1>Estudiantes</h1>
+
+            <p>
+                Administra los estudiantes registrados.
+                Haz doble clic sobre un estudiante para editarlo.
+            </p>
+
+        </div>
+
+        <div class="buttons">
+
+            <a
+                href="{% url 'crear_estudiante' %}"
+                class="btn btn-primary"
+            >
+                + Nuevo estudiante
+            </a>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+                        <th>N° Estudiante</th>
+                        <th>Título</th>
+                        <th>Apellido</th>
+                        <th>Salón</th>
+                        <th>Clases</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for estudiante in estudiantes %}
+
+                    <form
+                        method="POST"
+                        action="{% url 'editar_estudiante' estudiante.id_estudiante %}"
+                        class="student-form"
+                    >
+
+                        {% csrf_token %}
+
+                        <tr ondblclick="editarFila(this)">
+
+                            <!-- ID -->
+
+                            <td>
+
+                                {{ estudiante.id_estudiante }}
+
+                            </td>
+
+
+                            <!-- TITULO -->
+
+                            <td>
+
+                                <span class="view-value">
+                                    {{ estudiante.titulo }}
+                                </span>
+
+                                <input
+                                    type="text"
+                                    name="titulo"
+                                    value="{{ estudiante.titulo }}"
+                                    class="edit-input"
+                                >
+
+                            </td>
+
+
+                            <!-- APELLIDO -->
+
+                            <td>
+
+                                <span class="view-value">
+                                    {{ estudiante.apellido }}
+                                </span>
+
+                                <input
+                                    type="text"
+                                    name="apellido"
+                                    value="{{ estudiante.apellido }}"
+                                    class="edit-input"
+                                >
+
+                            </td>
+
+
+                            <!-- SALON -->
+
+                            <td>
+
+                                <span class="view-value">
+                                    {{ estudiante.salon.id_salon }}
+                                </span>
+
+                                <select
+                                    name="salon"
+                                    class="edit-input"
+                                >
+
+                                    {% for salon in salones %}
+
+                                    <option
+                                        value="{{ salon.id_salon }}"
+                                        {% if salon.id_salon == estudiante.salon.id_salon %}
+                                            selected
+                                        {% endif %}
+                                    >
+
+                                        {{ salon.id_salon }}
+
+                                    </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </td>
+
+
+                            <!-- CLASES -->
+
+                            <td>
+
+                                <span class="view-value">
+
+                                    {% for clase in estudiante.clases.all %}
+
+                                        {{ clase.nombre_clase }}
+
+                                        {% if not forloop.last %}
+                                            ,
+                                        {% endif %}
+
+                                    {% empty %}
+
+                                        Sin clases
+
+                                    {% endfor %}
+
+                                </span>
+
+
+                                <select
+                                    name="clases"
+                                    multiple
+                                    class="edit-input"
+                                >
+
+                                    {% for clase in clases %}
+
+                                    <option
+                                        value="{{ clase.id }}"
+                                        {% if clase in estudiante.clases.all %}
+                                            selected
+                                        {% endif %}
+                                    >
+
+                                        {{ clase.nombre_clase }}
+
+                                    </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </td>
+
+
+                            <!-- ACCIONES -->
+
+                            <td class="actions">
+
+                                <button
+                                    type="submit"
+                                    class="btn-save"
+                                >
+                                    Guardar
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn-delete"
+                                    onclick="
+                                        event.stopPropagation();
+                                        eliminarEstudiante(
+                                            '{{ estudiante.id_estudiante }}'
+                                        );
+                                    "
+                                >
+                                    Eliminar
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </form>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="6">
+                            No hay estudiantes registrados.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FORMULARIO OCULTO PARA ELIMINAR -->
+
+<form
+    id="delete-form"
+    method="POST"
+    style="display: none;"
+>
+    {% csrf_token %}
+</form>
+
+
+<script>
+
+function editarFila(fila) {
+
+    const inputs =
+        fila.querySelectorAll(".edit-input");
+
+    const valores =
+        fila.querySelectorAll(".view-value");
+
+    const guardar =
+        fila.querySelector(".btn-save");
+
+
+    /*
+     * Mostrar los campos editables
+     */
+
+    inputs.forEach(input => {
+
+        input.style.display = "block";
+
+    });
+
+
+    /*
+     * Ocultar los valores normales
+     */
+
+    valores.forEach(valor => {
+
+        valor.style.display = "none";
+
+    });
+
+
+    /*
+     * Mostrar botón guardar
+     */
+
+    guardar.style.display = "inline-block";
+
+}
+
+
+/*
+ * ELIMINAR ESTUDIANTE
+ */
+
+function eliminarEstudiante(id) {
+
+    const confirmar = confirm(
+        "¿Seguro que quieres eliminar este estudiante?"
+    );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    const form =
+        document.getElementById("delete-form");
+
+
+    form.action =
+        `/estudiantes/estudiantes/${id}/eliminar/`;
+
+
+    form.submit();
+
+}
+
+</script>
+
+{% endblock %}

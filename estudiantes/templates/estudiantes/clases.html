@@ -1,0 +1,207 @@
+{% extends "estudiantes/base_estudiantes.html" %}
+
+{% block title %}
+    Clases
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>Clases</h1>
+
+        <p>
+            Administra las clases disponibles.
+            Haz doble clic sobre una clase para modificarla.
+        </p>
+
+        <div class="buttons">
+
+            <a
+                href="{% url 'crear_clase' %}"
+                class="btn btn-primary"
+            >
+                + Nueva clase
+            </a>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Clase</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for clase in clases %}
+
+                    <tr ondblclick="editarFila(this)">
+
+                        <!-- NOMBRE DE LA CLASE -->
+
+                        <td>
+
+                            <span class="view-value">
+                                {{ clase.nombre_clase }}
+                            </span>
+
+                            <input
+                                type="text"
+                                name="nombre_clase"
+                                value="{{ clase.nombre_clase }}"
+                                class="edit-input"
+                            >
+
+                        </td>
+
+
+                        <!-- ACCIONES -->
+
+                        <td class="actions">
+
+                            <!-- GUARDAR -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'editar_clase' clase.id %}"
+                                class="edit-form"
+                            >
+
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="nombre_clase"
+                                    class="form-nombre-clase"
+                                    value="{{ clase.nombre_clase }}"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="btn-save"
+                                >
+                                    Guardar
+                                </button>
+
+                            </form>
+
+
+                            <!-- ELIMINAR -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'eliminar_clase' clase.id %}"
+                                class="delete-form"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-delete"
+                                    onclick="
+                                        return confirm(
+                                            '¿Seguro que quieres eliminar esta clase?'
+                                        );
+                                    "
+                                >
+                                    Eliminar
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="2">
+                            No hay clases registradas.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+function editarFila(fila) {
+
+    const input =
+        fila.querySelector(".edit-input");
+
+    const valor =
+        fila.querySelector(".view-value");
+
+    const guardar =
+        fila.querySelector(".btn-save");
+
+    const formulario =
+        fila.querySelector(".edit-form");
+
+    const nombreClase =
+        fila.querySelector(".form-nombre-clase");
+
+
+    /*
+     * Mostrar input
+     */
+
+    input.style.display = "block";
+
+
+    /*
+     * Ocultar texto
+     */
+
+    valor.style.display = "none";
+
+
+    /*
+     * Mostrar botón Guardar
+     */
+
+    guardar.style.display = "inline-block";
+
+
+    /*
+     * Actualizar el valor antes de enviar
+     */
+
+    formulario.addEventListener("submit", function () {
+
+        nombreClase.value = input.value;
+
+    });
+
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "estudiantes/base_estudiantes.html" %}
+
+{% block content %}
+
+<section class="students-home">
+
+    <div class="students-header">
+        <h1>Gestión de Estudiantes</h1>
+
+        <p>
+            Administra estudiantes, salones y clases
+            desde este panel.
+        </p>
+    </div>
+
+    <div class="students-options">
+
+        <a href="{% url 'lista_estudiantes' %}" class="students-card">
+            <h2>Estudiantes</h2>
+            <p>
+                Consultar y administrar los estudiantes registrados.
+            </p>
+        </a>
+
+        <a href="{% url 'lista_salones' %}" class="students-card">
+            <h2>Salones</h2>
+            <p>
+                Consultar y administrar los salones disponibles.
+            </p>
+        </a>
+
+        <a href="{% url 'lista_clases' %}" class="students-card">
+            <h2>Clases</h2>
+            <p>
+                Consultar y administrar las clases disponibles.
+            </p>
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
