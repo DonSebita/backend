@@ -35,7 +35,7 @@ class Estudiante(models.Model):
     Representa a los estudiantes titulares.
     Se separan los campos no atómicos 'Nombre del titular' en 'titulo' y 'apellido'.
     """
-    id_estudiante = models.IntegerField(primary_key=True, verbose_name="Número de Estudiante")
+    id_estudiante = models.AutoField(primary_key=True, verbose_name="Número de Estudiante")
     titulo = models.CharField(max_length=20, verbose_name="Título/Tratamiento")  # Ej: Sr., Srita.
     apellido = models.CharField(max_length=100, verbose_name="Apellido")
     
