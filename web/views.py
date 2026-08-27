@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from api.models import programmer
+from api.models import programmer,Libro, Lector, Autor, Editorial, Prestamo
 from .forms import ProgrammerForm
 
 
@@ -68,3 +68,19 @@ def servicios(request):
 
 def contacto(request):
     return render(request, "web/contacto.html")
+
+def biblioteca_view(request):
+    libros = Libro.objects.all()
+    lectores = Lector.objects.all()
+    autores = Autor.objects.all()
+    editoriales = Editorial.objects.all()
+    prestamos = Prestamo.objects.select_related('CodLibro', 'CodLector').all()
+
+    context = {
+        'libros': libros,
+        'lectores': lectores,
+        'autores': autores,
+        'editoriales': editoriales,
+        'prestamos': prestamos,
+    }
+    return render(request, 'web/biblioteca.html', context)

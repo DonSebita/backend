@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'web',
     'estudiantes',
     'rest_framework',
+    'biblioteca',
 
 ]
 

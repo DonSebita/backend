@@ -1,0 +1,119 @@
+{% extends "web/base_web.html" %}
+{% load static %}
+
+{% block title %}
+Biblioteca
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1>Gestión de Biblioteca</h1>
+        <p>Administración y visualización de libros, lectores, autores y préstamos registrados en la API.</p>
+
+        <!-- Tarjetas de Resumen General -->
+        <div class="cards" style="margin-bottom: 40px;">
+            <div class="card">
+                <h3>📚 Libros</h3>
+                <p>Total de títulos registrados: <strong>{{ libros.count }}</strong></p>
+            </div>
+            <div class="card">
+                <h3>👥 Lectores</h3>
+                <p>Total de usuarios registrados: <strong>{{ lectores.count }}</strong></p>
+            </div>
+            <div class="card">
+                <h3>✍️ Autores</h3>
+                <p>Total de autores registrados: <strong>{{ autores.count }}</strong></p>
+            </div>
+            <div class="card">
+                <h3>🤝 Préstamos Active</h3>
+                <p>Total de préstamos: <strong>{{ prestamos.count }}</strong></p>
+            </div>
+        </div>
+
+        <!-- Tabla: Libros -->
+        <h2>Catálogo de Libros</h2>
+        <div class="table-container" style="margin-bottom: 50px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Título del Libro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for libro in libros %}
+                    <tr>
+                        <td>#{{ libro.CodLibro }}</td>
+                        <td><strong>{{ libro.Titulo }}</strong></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2">No hay libros registrados aún.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tabla: Préstamos Activos -->
+        <h2>Préstamos Registrados</h2>
+        <div class="table-container" style="margin-bottom: 50px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Libro Prestado</th>
+                        <th>Lector</th>
+                        <th>Fecha Devolución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prestamo in prestamos %}
+                    <tr>
+                        <td>{{ prestamo.CodLibro.Titulo }}</td>
+                        <td>{{ prestamo.CodLector.ApellidoP }} {{ prestamo.CodLector.ApellidoM }}, {{ prestamo.CodLector.Nombres }}</td>
+                        <td>
+                            <span class="status status-active">
+                                {{ prestamo.FechaDev|date:"d/m/Y" }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No hay registros de préstamos activos.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tabla: Lectores -->
+        <h2>Lectores Registrados</h2>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Código Lector</th>
+                        <th>Apellidos</th>
+                        <th>Nombres</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lector in lectores %}
+                    <tr>
+                        <td>#{{ lector.CodLector }}</td>
+                        <td>{{ lector.ApellidoP }} {{ lector.ApellidoM }}</td>
+                        <td>{{ lector.Nombres }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No hay lectores registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
