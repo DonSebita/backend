@@ -1,14 +1,10 @@
 from django.urls import path, include
-from rest_framework import routers
+from rest_framework.routers import DefaultRouter
 from api import views
-from .views import (
-    LibroViewSet, LectorViewSet, AutorViewSet,
-    EditorialViewSet, PrestamoViewSet
-)
 
-router = DefaultRouter() 
+router = DefaultRouter()
 router.register(r'programmers', views.ProgrammerViewSet)
-router.register(r'libros', views.LIBROViewSet)
+router.register(r'libros', views.LibroViewSet)
 router.register(r'lectores', views.LectorViewSet)
 router.register(r'autores', views.AutorViewSet)
 router.register(r'editoriales', views.EditorialViewSet)
