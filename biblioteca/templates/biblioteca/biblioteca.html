@@ -1,0 +1,220 @@
+{% extends "web/base_web.html" %}
+{% load static %}
+
+{% block title %}
+Biblioteca
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>Gestión de Biblioteca</h1>
+
+        <p>
+            Administración y visualización de libros, lectores,
+            autores, editoriales y préstamos.
+        </p>
+
+
+        <!-- ================================================= -->
+        <!-- ADMINISTRACIÓN -->
+        <!-- ================================================= -->
+
+        <h2>Administración</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>📚 Libros</h3>
+                <p>Crear, editar y eliminar libros.</p>
+
+                <a href="{% url 'biblioteca_lista' 'libros' %}">
+                    Gestionar
+                </a>
+            </div>
+
+
+            <div class="card">
+                <h3>👥 Lectores</h3>
+                <p>Administrar lectores registrados.</p>
+
+                <a href="{% url 'biblioteca_lista' 'lectores' %}">
+                    Gestionar
+                </a>
+            </div>
+
+
+            <div class="card">
+                <h3>✍️ Autores</h3>
+                <p>Administrar autores.</p>
+
+                <a href="{% url 'biblioteca_lista' 'autores' %}">
+                    Gestionar
+                </a>
+            </div>
+
+
+            <div class="card">
+                <h3>🏢 Editoriales</h3>
+                <p>Administrar editoriales.</p>
+
+                <a href="{% url 'biblioteca_lista' 'editoriales' %}">
+                    Gestionar
+                </a>
+            </div>
+
+
+            <div class="card">
+                <h3>🤝 Préstamos</h3>
+                <p>Registrar y administrar préstamos.</p>
+
+                <a href="{% url 'biblioteca_lista' 'prestamos' %}">
+                    Gestionar
+                </a>
+            </div>
+
+
+            <div class="card">
+                <h3>🔗 Libro - Autor</h3>
+                <p>Relacionar libros con autores.</p>
+
+                <a href="{% url 'biblioteca_lista' 'libro_autor' %}">
+                    Gestionar
+                </a>
+            </div>
+
+
+            <div class="card">
+                <h3>🔗 Libro - Editorial</h3>
+                <p>Relacionar libros con editoriales.</p>
+
+                <a href="{% url 'biblioteca_lista' 'libro_editorial' %}">
+                    Gestionar
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- LIBROS -->
+        <!-- ================================================= -->
+
+        <h2 style="margin-top: 50px;">
+            Catálogo de Libros
+        </h2>
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Título</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for libro in libros %}
+
+                    <tr>
+
+                        <td>
+                            #{{ libro.CodLibro }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ libro.Titulo }}
+                            </strong>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="2">
+                            No hay libros registrados.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PRÉSTAMOS -->
+        <!-- ================================================= -->
+
+        <h2 style="margin-top: 50px;">
+            Préstamos Registrados
+        </h2>
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Libro</th>
+                        <th>Lector</th>
+                        <th>Fecha devolución</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for prestamo in prestamos %}
+
+                    <tr>
+
+                        <td>
+                            {{ prestamo.CodLibro.Titulo }}
+                        </td>
+
+                        <td>
+                            {{ prestamo.CodLector }}
+                        </td>
+
+                        <td>
+                            {{ prestamo.FechaDev|date:"d/m/Y" }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="3">
+                            No hay préstamos registrados.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

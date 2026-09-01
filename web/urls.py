@@ -30,10 +30,4 @@ urlpatterns = [
         views.programmer_delete,
         name="programmer_delete"
     ),
-    
-    path(
-        'biblioteca/', 
-        views.biblioteca_view, 
-        name='biblioteca'
-    ),
 ]

@@ -19,7 +19,9 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', 
+        admin.site.urls
+    ),
     path(
         "api/programmers/",
         RedirectView.as_view(
@@ -27,7 +29,16 @@ urlpatterns = [
             permanent=False
         )
     ),
-    path('api/', include('api.urls')),
-    path("", include("web.urls")),
-    path("estudiantes/", include("estudiantes.urls")),
+    path('api/', 
+        include('api.urls')
+    ),
+    path("", 
+        include("web.urls")
+    ),
+    path("estudiantes/", 
+        include("estudiantes.urls")
+    ),
+    path("biblioteca/", 
+        include("biblioteca.urls")
+    ),
 ]

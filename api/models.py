@@ -8,6 +8,7 @@ class programmer(models.Model):
  is_active = models.BooleanField(default=True)
 
 
+
 class Lector(models.Model):
     CodLector = models.AutoField(primary_key=True)
     ApellidoP = models.CharField(max_length=100)

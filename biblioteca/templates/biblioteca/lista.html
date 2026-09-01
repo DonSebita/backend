@@ -1,0 +1,107 @@
+{% extends "web/base_web.html" %}
+{% load biblioteca_tags %}
+
+{% block title %}
+{{ config.titulo }}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>{{ config.titulo }}</h1>
+
+        <div style="margin-bottom: 25px;">
+
+            <a href="{% url 'biblioteca' %}" class="btn">
+                ← Volver
+            </a>
+
+            <a
+                href="{% url 'biblioteca_crear' modelo %}"
+                class="btn"
+            >
+                + Crear {{ config.singular }}
+            </a>
+
+        </div>
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        {% for campo in campos %}
+
+                        <th>
+                            {{ campo.verbose_name|title }}
+                        </th>
+
+                        {% endfor %}
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for objeto in objetos %}
+
+                    <tr>
+
+                        {% for campo in campos %}
+
+                        <td>
+                            {{ objeto|getattribute:campo.name }}
+                        </td>
+
+                        {% endfor %}
+
+                        <td>
+
+                            <a
+                                href="{% url 'biblioteca_editar' modelo objeto.pk %}"
+                            >
+                                ✏️ Editar
+                            </a>
+
+                            <a
+                                href="{% url 'biblioteca_eliminar' modelo objeto.pk %}"
+                            >
+                                🗑️ Eliminar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="20">
+                            No hay registros.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

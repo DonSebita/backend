@@ -1,0 +1,136 @@
+{% extends "web/base_web.html" %}
+{% load biblioteca_tags %}
+
+{% block title %}
+{{ accion }} {{ config.singular }}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <h1>
+            {{ accion }} {{ config.singular }}
+        </h1>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            {% for campo in campos %}
+
+                {% if not campo.primary_key %}
+
+                <div style="margin-bottom: 20px;">
+
+                    <label>
+                        {{ campo.verbose_name|title }}
+                    </label>
+
+
+                    {% if campo.is_relation %}
+
+                        <select
+                            name="{{ campo.name }}"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                            {% for opcion in campo.related_model.objects.all %}
+
+                            <option
+                                value="{{ opcion.pk }}"
+
+                                {% if objeto and objeto|getattribute:campo.name == opcion %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ opcion }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+
+                    {% elif campo.get_internal_type == "BooleanField" %}
+
+                        <input
+                            type="checkbox"
+                            name="{{ campo.name }}"
+
+                            {% if objeto and objeto|getattribute:campo.name %}
+                                checked
+                            {% endif %}
+                        >
+
+
+                    {% elif campo.get_internal_type == "DateField" %}
+
+                        <input
+                            type="date"
+                            name="{{ campo.name }}"
+
+                            {% if objeto %}
+                                value="{{ objeto|getattribute:campo.name|date:'Y-m-d' }}"
+                            {% endif %}
+
+                            required
+                        >
+
+
+                    {% else %}
+
+                        <input
+                            type="text"
+                            name="{{ campo.name }}"
+
+                            {% if objeto %}
+                                value="{{ objeto|getattribute:campo.name }}"
+                            {% endif %}
+
+                            {% if not campo.blank %}
+                                required
+                            {% endif %}
+                        >
+
+                    {% endif %}
+
+                </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                Guardar
+            </button>
+
+
+            <a
+                href="{% url 'biblioteca_lista' modelo %}"
+                class="btn"
+            >
+                Cancelar
+            </a>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
