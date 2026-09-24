@@ -1,22 +1,29 @@
-"""
-URL configuration for config project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from rest_framework_simplejwt.views import TokenRefreshView
+from tienda.views import (
+    HomeView, PerfilClienteView, RegistroClienteView, CustomLoginView,
+    HomeTemplateView, LoginTemplateView, PerfilTemplateView, AdminDashboardTemplateView,
+    error_404_view
+)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), # Admin predeterminado de Django
+    
+    # --- RUTAS FRONTEND (Templates) ---
+    path('', HomeTemplateView.as_view(), name='web_home'),
+    path('login/', LoginTemplateView.as_view(), name='web_login'),
+    path('perfil/', PerfilTemplateView.as_view(), name='web_perfil'),
+    path('admin-dashboard/', AdminDashboardTemplateView.as_view(), name='web_admin_dashboard'),
+
+    # --- RUTAS BACKEND (API) ---
+    path('api/home/', HomeView.as_view(), name='api_home'),
+    path('api/perfil/', PerfilClienteView.as_view(), name='api_perfil'),
+    path('api/registro/', RegistroClienteView.as_view(), name='api_registro'),
+    
+    # Usamos nuestro CustomLoginView en lugar del genérico
+    path('api/login/', CustomLoginView.as_view(), name='api_login'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='api_token_refresh'),
+    
+    re_path(r'^.*$', error_404_view, name='error_404'),
 ]

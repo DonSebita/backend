@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block hero %}
+<div class="hero">
+    <p>BUNDLE AND SAVE</p>
+    <h1>More Plants, More Savings</h1>
+    <p>Buy 1, get a 2nd for 50% OFF<br>Buy 3, get a 4th for FREE</p>
+    <br>
+    <a href="#" class="btn">Bundle & Save</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2>Featured Plants</h2>
+<div class="grid-productos">
+    <!-- Reutilizamos el componente 3 veces pasándole variables distintas -->
+    {% include 'components/card_producto.html' with nombre="Money Tree Plant" precio="43.00" %}
+    {% include 'components/card_producto.html' with nombre="Indoor Olive Tree" precio="58.00" %}
+    {% include 'components/card_producto.html' with nombre="Peace Lily" precio="43.00" %}
+</div>
+{% endblock %}

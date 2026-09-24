@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Incluimos nuestro componente visual -->
+    {% include 'components/card_perfil.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('access_token');
+            
+            // Si no hay token, lo devolvemos al login
+            if (!token) {
+                window.location.href = "{% url 'web_login' %}";
+                return;
+            }
+
+            try {
+                // Hacemos la petición a nuestra API protegida
+                const response = await fetch('/api/perfil/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('perfil-nombre').innerText = data.username || 'Usuario';
+                    document.getElementById('perfil-email').innerText = data.email;
+                    document.getElementById('perfil-telefono').innerText = data.telefono_contacto || 'No registrado';
+                    document.getElementById('perfil-direccion').innerText = data.direccion_envio || 'No registrada';
+                } else {
+                    // Evita sacarte si el error es de base de datos (500)
+                    if (response.status === 401) {
+                        cerrarSesion();
+                    } else {
+                        console.error("Error en servidor. Revisa tu consola de Python.");
+                        document.getElementById('perfil-nombre').innerText = "Error cargando datos del perfil.";
+                    }
+                }
+            } catch (error) {
+                console.error("Error al cargar el perfil:", error);
+            }
+        });
+    </script>
+{% endblock %}

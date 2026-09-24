@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'tienda.Usuario'
 
 # Application definition
 
@@ -46,6 +47,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+}
+
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'id_usuario', # Le decimos que use tu campo personalizado en lugar de 'id'
 }
 
 MIDDLEWARE = [
@@ -127,6 +132,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static', # Le dice a Django que busque la carpeta 'static' en la raíz
+]
 
 
 # Email

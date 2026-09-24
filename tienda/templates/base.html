@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tienda de Plantas</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav>
+        <!-- Lado Izquierdo -->
+        <div class="nav-seccion">
+            <a href="/">Inicio</a>
+        </div>
+        
+        <!-- Lado Derecho -->
+        <div class="nav-seccion">
+            <!-- Grupo Visitantes -->
+            <div id="nav-guest" style="display:flex; gap:15px; align-items:center;">
+                <a href="{% url 'web_login' %}" class="btn-outline">Iniciar Sesión</a>
+                <a href="{% url 'web_login' %}?registro=true" class="btn">Registrarse</a> 
+            </div>
+            
+            <!-- Grupo Usuarios Logueados -->
+            <div id="nav-auth" style="display:none; gap:15px; align-items:center;">
+                <a href="{% url 'web_perfil' %}">
+                    <img src="{% static 'img/icon.png' %}" alt="Foto de perfil" class="nav-profile-img">
+                    Mi Perfil
+                </a>
+                <a href="#" onclick="cerrarSesion()" class="btn-outline">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Espacio para banners especiales (como el del home) -->
+    {% block hero %}{% endblock %}
+
+    <!-- CONTENEDOR PRINCIPAL: Aquí se carga el contenido de las demás páginas -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        // Lógica para mostrar los botones correctos según la sesión
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            document.getElementById('nav-guest').style.display = 'none';
+            document.getElementById('nav-auth').style.display = 'flex';
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = "{% url 'web_login' %}";
+        }
+    </script>
+</body>
+</html>

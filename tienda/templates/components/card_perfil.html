@@ -1,0 +1,25 @@
+{% load static %}
+<div class="card-perfil">
+    <div class="perfil-header">
+        <img src="{% static 'img/icon.png' %}" alt="Foto de perfil" class="perfil-img-large">
+        <h2 id="perfil-nombre">Cargando perfil...</h2>
+        <p id="perfil-rol" style="opacity: 0.8; margin-top: 5px; text-transform: capitalize;"></p>
+    </div>
+    <div class="perfil-body">
+        <div class="perfil-item">
+            <strong>Correo Electrónico:</strong> 
+            <span id="perfil-email">...</span>
+        </div>
+        <div class="perfil-item">
+            <strong>Teléfono de Contacto:</strong> 
+            <span id="perfil-telefono">No registrado</span>
+        </div>
+        <div class="perfil-item">
+            <strong>Dirección de Envío:</strong> 
+            <span id="perfil-direccion">No registrada</span>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn">Editar Datos</button>
+        </div>
+    </div>
+</div>
