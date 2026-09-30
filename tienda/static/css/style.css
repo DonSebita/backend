@@ -183,3 +183,226 @@ nav a:hover { color: var(--verde-claro); }
 .perfil-item strong {
     color: var(--verde-oscuro);
 }
+
+/* DISEÑO DASHBOARD (Panel Lateral y Contenido) */
+.dashboard-layout {
+    display: flex;
+    min-height: calc(100vh - 80px);
+    background-color: #F7F7F9; /* Gris muy claro como en la imagen */
+}
+
+.sidebar {
+    width: 260px;
+    background-color: #F7F7F9;
+    border-right: 1px solid #EAE5D9;
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-perfil {
+    padding: 0 30px 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #EAE5D9;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 20px 0;
+    margin: 0;
+}
+
+.sidebar-menu li a {
+    display: block;
+    padding: 12px 30px;
+    color: #6B7280;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.sidebar-menu li.active a, .sidebar-menu li a:hover {
+    background-color: #EBF4FF; /* Azul suave para resaltar */
+    color: #3B82F6;
+    border-left: 4px solid #3B82F6;
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+/* Tablas para el Admin */
+.table-modern {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-modern th {
+    background-color: #F3F4F6;
+    color: #374151;
+    text-align: left;
+    padding: 15px;
+    font-size: 14px;
+    border-radius: 8px 8px 0 0;
+}
+
+.table-modern td {
+    padding: 15px;
+    border-bottom: 1px solid #E5E7EB;
+    color: #4B5563;
+    font-size: 14px;
+}
+
+/* Formularios CRUD */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+/* ESTILOS DE FORMULARIO (Inputs) */
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #EAE5D9;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: var(--texto-oscuro);
+    transition: all 0.3s ease;
+    margin-top: 5px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--verde-claro);
+    box-shadow: 0 0 0 3px rgba(139, 155, 126, 0.2);
+}
+
+/* Casillas bloqueadas (readonly) */
+.form-control[readonly] {
+    background-color: #F3F4F6;
+    color: #9CA3AF;
+    cursor: default;
+    border-color: transparent;
+}
+
+/* Botón rojo para eliminar */
+.btn-danger {
+    background-color: transparent;
+    color: #EF4444;
+    border: 2px solid #EF4444;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #EF4444;
+    color: white;
+}
+/* ESTILOS DE FORMULARIO (Inputs) */
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #EAE5D9;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: var(--texto-oscuro);
+    transition: all 0.3s ease;
+    margin-top: 5px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--verde-claro);
+    box-shadow: 0 0 0 3px rgba(139, 155, 126, 0.2);
+}
+
+/* Casillas bloqueadas (readonly) */
+.form-control[readonly] {
+    background-color: #F3F4F6;
+    color: #9CA3AF;
+    cursor: default;
+    border-color: transparent;
+}
+
+/* Botón rojo para eliminar */
+.btn-danger {
+    background-color: transparent;
+    color: #EF4444;
+    border: 2px solid #EF4444;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #EF4444;
+    color: white;
+}
+
+/* ESTILOS DEL DASHBOARD ADMIN */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.admin-box {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    border-top: 5px solid var(--verde-claro);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.admin-box h3 {
+    margin-top: 0;
+    color: var(--verde-oscuro);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Semáforo de Ventas */
+.semaforo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: var(--texto-oscuro);
+}
+
+.dot {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-red { background-color: #EF4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+.dot-yellow { background-color: #F59E0B; box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+.dot-green { background-color: #10B981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }

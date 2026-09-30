@@ -1,0 +1,59 @@
+<div class="dashboard-card" id="seccion-direcciones" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h2 style="color: var(--verde-oscuro); margin-top: 0;">Mis Direcciones</h2>
+            <p style="color: #6B7280; margin-bottom: 20px;">Gestiona las direcciones donde enviaremos tus plantas.</p>
+        </div>
+        <button type="button" class="btn" id="btn-mostrar-form-dir" onclick="toggleFormularioDireccion()">+ Agregar Dirección</button>
+    </div>
+    
+    <!-- Contenedor de la lista de direcciones -->
+    <div id="lista-direcciones" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <!-- Las direcciones se inyectarán aquí con JavaScript -->
+    </div>
+
+    <!-- Formulario para agregar una nueva dirección (Oculto por defecto) -->
+    <div id="contenedor-form-direccion" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #EAE5D9;">
+        <h3 style="color: var(--verde-oscuro); margin-top: 0;">Nueva Dirección</h3>
+        <form id="form-direccion">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label style="font-weight: bold; color: var(--verde-oscuro);">Alias (Ej. Casa, Trabajo)</label>
+                    <input type="text" id="dir-alias" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: bold; color: var(--verde-oscuro);">Tipo de Vivienda</label>
+                    <select id="dir-tipo" class="form-control" required>
+                        <option value="Casa">Casa</option>
+                        <option value="Departamento">Departamento</option>
+                        <option value="Oficina">Oficina</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: bold; color: var(--verde-oscuro);">Dirección (Calle y Número)</label>
+                    <input type="text" id="dir-calle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: bold; color: var(--verde-oscuro);">Comuna</label>
+                    <input type="text" id="dir-comuna" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: bold; color: var(--verde-oscuro);">Ciudad</label>
+                    <input type="text" id="dir-ciudad" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: bold; color: var(--verde-oscuro);">Región</label>
+                    <input type="text" id="dir-region" class="form-control" required>
+                </div>
+            </div>
+            <!-- Campos por defecto para evitar errores en la BD -->
+            <input type="hidden" id="dir-pais" value="Chile">
+            <input type="hidden" id="dir-postal" value="0000000">
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn-outline" onclick="toggleFormularioDireccion()">Cancelar</button>
+                <button type="submit" class="btn">Guardar Dirección</button>
+            </div>
+        </form>
+    </div>
+</div>

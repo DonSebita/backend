@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Tienda de Plantas</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2.0">
 </head>
 <body>
     <nav>
@@ -40,12 +40,37 @@
         {% block content %}{% endblock %}
     </div>
 
-    <script>
+<script>
         // Lógica para mostrar los botones correctos según la sesión
         const token = localStorage.getItem('access_token');
+        
         if (token) {
             document.getElementById('nav-guest').style.display = 'none';
             document.getElementById('nav-auth').style.display = 'flex';
+
+            // --- LÓGICA DE EXPULSIÓN AUTOMÁTICA ---
+            try {
+                // 1. Decodificamos el payload del token (la parte central del JWT)
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                
+                // 2. Calculamos cuánto tiempo le queda (el JWT guarda el tiempo en segundos, JS usa milisegundos)
+                const tiempoExpiracion = payload.exp * 1000;
+                const tiempoRestante = tiempoExpiracion - Date.now();
+
+                if (tiempoRestante <= 0) {
+                    // Si el token ya caducó mientras la página estaba cerrada, lo echamos al instante
+                    cerrarSesion();
+                } else {
+                    // Si aún es válido, programamos un temporizador para expulsarlo en el milisegundo exacto que caduca
+                    setTimeout(() => {
+                        alert("Tu sesión ha expirado por seguridad. Vuelve a iniciar sesión.");
+                        cerrarSesion();
+                    }, tiempoRestante);
+                }
+            } catch (error) {
+                // Si el token fue manipulado o está corrupto, cerramos sesión por seguridad
+                cerrarSesion();
+            }
         }
 
         function cerrarSesion() {
@@ -54,5 +79,6 @@
             window.location.href = "{% url 'web_login' %}";
         }
     </script>
+    
 </body>
 </html>

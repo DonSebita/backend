@@ -1,47 +1,251 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <!-- Incluimos nuestro componente visual -->
-    {% include 'components/card_perfil.html' %}
+<style>
+    .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+</style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('access_token');
-            
-            // Si no hay token, lo devolvemos al login
-            if (!token) {
-                window.location.href = "{% url 'web_login' %}";
-                return;
+<div class="dashboard-layout">
+    <!-- Barra Lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-perfil">
+            <img src="{% static 'img/icon.png' %}" alt="Perfil" class="nav-profile-img" style="width: 50px; height: 50px;">
+            <div>
+                <strong id="side-nombre" style="color: var(--verde-oscuro); display: block;">Cargando...</strong>
+                <small style="color: #6B7280;">Cliente</small>
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <!-- Agregamos IDs y onclick para navegar -->
+            <li class="active" id="menu-perfil"><a href="#" onclick="mostrarSeccion('perfil')">Datos Personales</a></li>
+            <li id="menu-direcciones"><a href="#" onclick="mostrarSeccion('direcciones')">Direcciones</a></li>
+            <li>
+                <a href="#">Compras</a>
+                <ul style="list-style: none; padding-left: 20px; margin-top: 5px;">
+                    <li><a href="#" style="font-size: 13px; font-weight: normal; padding: 8px 30px;">En Proceso</a></li>
+                    <li><a href="#" style="font-size: 13px; font-weight: normal; padding: 8px 30px;">Enviadas</a></li>
+                    <li><a href="#" style="font-size: 13px; font-weight: normal; padding: 8px 30px;">Completadas</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-content">
+        <!-- Reutilizamos nuestros componentes -->
+        {% include 'components/card_perfil.html' %}
+        {% include 'components/card_direcciones.html' %}
+    </main>
+</div>
+<script>
+    // --- NAVEGACIÓN DEL SIDEBAR ---
+    function mostrarSeccion(seccion) {
+        document.getElementById('seccion-perfil').style.display = 'none';
+        document.getElementById('seccion-direcciones').style.display = 'none';
+        document.getElementById('menu-perfil').classList.remove('active');
+        document.getElementById('menu-direcciones').classList.remove('active');
+        
+        document.getElementById(`seccion-${seccion}`).style.display = 'block';
+        document.getElementById(`menu-${seccion}`).classList.add('active');
+    }
+
+    // --- LÓGICA DE EDICIÓN ---
+    function habilitarCampo(input) {
+        input.removeAttribute('readonly');
+        input.focus();
+        document.getElementById('btn-guardar-perfil').style.display = 'block';
+    }
+
+    function habilitarEdicion() {
+        const inputs = ['perfil-nombre', 'perfil-telefono', 'perfil-rut'];
+        inputs.forEach(id => document.getElementById(id).removeAttribute('readonly'));
+        document.getElementById('perfil-nombre').focus();
+        document.getElementById('btn-guardar-perfil').style.display = 'block';
+    }
+
+    function eliminarCuenta() {
+        if(confirm("¿Estás seguro de que deseas eliminar tu cuenta de forma permanente? Esta acción no se puede deshacer.")) {
+            alert("Simulación: Petición para eliminar cuenta enviada.");
+        }
+    }
+   // --- LÓGICA DE DIRECCIONES ---
+    let direccionEditandoId = null; // Variable para saber si estamos creando o editando
+
+    function toggleFormularioDireccion(limpiar = true) {
+        const formDiv = document.getElementById('contenedor-form-direccion');
+        const btnMostrar = document.getElementById('btn-mostrar-form-dir');
+        
+        if (formDiv.style.display === 'none') {
+            formDiv.style.display = 'block';
+            btnMostrar.style.display = 'none';
+        } else {
+            formDiv.style.display = 'none';
+            btnMostrar.style.display = 'block';
+            if (limpiar) {
+                document.getElementById('form-direccion').reset();
+                direccionEditandoId = null; // Reiniciamos si cancela
             }
+        }
+    }
 
-            try {
-                // Hacemos la petición a nuestra API protegida
-                const response = await fetch('/api/perfil/', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById('perfil-nombre').innerText = data.username || 'Usuario';
-                    document.getElementById('perfil-email').innerText = data.email;
-                    document.getElementById('perfil-telefono').innerText = data.telefono_contacto || 'No registrado';
-                    document.getElementById('perfil-direccion').innerText = data.direccion_envio || 'No registrada';
-                } else {
-                    // Evita sacarte si el error es de base de datos (500)
-                    if (response.status === 401) {
-                        cerrarSesion();
-                    } else {
-                        console.error("Error en servidor. Revisa tu consola de Python.");
-                        document.getElementById('perfil-nombre').innerText = "Error cargando datos del perfil.";
-                    }
+    async function cargarDirecciones() {
+        const token = localStorage.getItem('access_token');
+        try {
+            const response = await fetch('/api/direcciones/', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const direcciones = await response.json();
+                const contenedor = document.getElementById('lista-direcciones');
+                contenedor.innerHTML = ''; 
+                
+                if (direcciones.length === 0) {
+                    contenedor.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #6B7280; padding: 20px; border: 1px dashed #ccc; border-radius: 12px;">Aún no tienes direcciones registradas.</div>';
+                    return;
                 }
-            } catch (error) {
-                console.error("Error al cargar el perfil:", error);
+
+                direcciones.forEach(dir => {
+                    // Preparamos los datos para la función de edición
+                    const dirData = JSON.stringify(dir).replace(/"/g, '&quot;');
+                    
+                    contenedor.innerHTML += `
+                        <div style="border: 1px solid #EAE5D9; padding: 20px; border-radius: 12px; background: #FCFAF6;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <strong style="color: var(--verde-oscuro); font-size: 16px;">🏠 ${dir.alias || dir.tipo}</strong>
+                                <div>
+                                    <button onclick="prepararEdicion(${dirData})" style="background:none; border:none; color:#3B82F6; cursor:pointer;" title="Editar">✏️️</button>
+                                    <button onclick="eliminarDireccion(${dir.id_direccion})" style="background:none; border:none; color:#EF4444; cursor:pointer;" title="Eliminar">🗑️</button>
+                                </div>
+                            </div>
+                            <p style="margin: 5px 0; color: #4B5563;">${dir.direccion}</p>
+                            <p style="margin: 5px 0; color: #4B5563;">${dir.comuna}, ${dir.ciudad}</p>
+                            <p style="margin: 5px 0; color: #6B7280; font-size: 13px;">${dir.region}, ${dir.pais}</p>
+                        </div>
+                    `;
+                });
             }
-        });
-    </script>
+        } catch (error) {
+            console.error("Error al cargar direcciones:", error);
+        }
+    }
+
+    // Preparar el formulario para Editar
+    function prepararEdicion(dir) {
+        direccionEditandoId = dir.id_direccion;
+        document.getElementById('dir-alias').value = dir.alias;
+        document.getElementById('dir-tipo').value = dir.tipo;
+        document.getElementById('dir-calle').value = dir.direccion;
+        document.getElementById('dir-comuna').value = dir.comuna;
+        document.getElementById('dir-ciudad').value = dir.ciudad;
+        document.getElementById('dir-region').value = dir.region;
+        
+        // Forzamos abrir el formulario sin limpiarlo
+        if (document.getElementById('contenedor-form-direccion').style.display === 'none') {
+            toggleFormularioDireccion(false);
+        }
+        document.getElementById('dir-alias').focus();
+    }
+
+    // Eliminar Dirección
+    async function eliminarDireccion(id) {
+        if (!confirm("¿Seguro que deseas eliminar esta dirección?")) return;
+        
+        const token = localStorage.getItem('access_token');
+        try {
+            const response = await fetch(`/api/direcciones/${id}/`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                cargarDirecciones();
+            } else {
+                alert("Hubo un error al eliminar.");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Guardar (Crear o Editar)
+    document.getElementById('form-direccion').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('access_token');
+        
+        const datos = {
+            alias: document.getElementById('dir-alias').value,
+            tipo: document.getElementById('dir-tipo').value,
+            direccion: document.getElementById('dir-calle').value,
+            comuna: document.getElementById('dir-comuna').value,
+            ciudad: document.getElementById('dir-ciudad').value,
+            region: document.getElementById('dir-region').value,
+            pais: document.getElementById('dir-pais').value,
+            codigo_postal: document.getElementById('dir-postal').value
+        };
+
+        // Si tenemos un ID, es PUT (actualizar), si no, es POST (crear)
+        const url = direccionEditandoId ? `/api/direcciones/${direccionEditandoId}/` : '/api/direcciones/';
+        const metodo = direccionEditandoId ? 'PUT' : 'POST';
+
+        try {
+            const response = await fetch(url, {
+                method: metodo,
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(datos)
+            });
+
+            if (response.ok) {
+                toggleFormularioDireccion(true); // Ocultar y limpiar form
+                cargarDirecciones(); // Recargar la lista
+            } else {
+                const errorData = await response.json();
+                console.error("Error BD:", errorData);
+                alert("Error al guardar la dirección. Revisa la consola.");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+        }
+    });
+
+    // --- CARGA DE DATOS DESDE LA API ---
+    document.addEventListener('DOMContentLoaded', async () => {
+        const token = localStorage.getItem('access_token');
+        if (!token) { window.location.href = "{% url 'web_login' %}"; return; }
+
+        try {
+            const response = await fetch('/api/perfil/', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                cargarDirecciones();
+                // 1. Llenamos el nombre en el panel izquierdo (sidebar)
+                document.getElementById('side-nombre').innerText = data.username || 'Usuario';
+                
+                // 2. Llenamos los inputs del formulario central
+                document.getElementById('perfil-nombre').value = data.username || '';
+                document.getElementById('perfil-email').value = data.email || '';
+                
+                if (data.telefono_contacto && data.telefono_contacto !== 'No registrado') {
+                    document.getElementById('perfil-telefono').value = data.telefono_contacto;
+                }
+                
+                // (El RUT quedará vacío por ahora usando el placeholder hasta que agreguemos ese campo al serializer de la API)
+                
+            } else if (response.status === 401) {
+                // Si el token expiró, cerramos sesión
+                localStorage.removeItem('access_token');
+                window.location.href = "{% url 'web_login' %}";
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            document.getElementById('side-nombre').innerText = "Error cargando perfil";
+        }
+    });
+</script>
 {% endblock %}

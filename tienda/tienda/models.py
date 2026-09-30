@@ -7,7 +7,7 @@ class UsuarioManager(BaseUserManager):
             raise ValueError('El email es obligatorio')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password) # Encripta la contraseña
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -19,7 +19,6 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractBaseUser):
     id_usuario = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True, max_length=255)
-    # El campo 'password' ya está incluido internamente por AbstractBaseUser
     rol = models.CharField(max_length=50)
     activo = models.BooleanField(default=True)
     create_at = models.DateTimeField(auto_now_add=True)
@@ -27,7 +26,7 @@ class Usuario(AbstractBaseUser):
 
     objects = UsuarioManager()
 
-    USERNAME_FIELD = 'email' # Usaremos el email para el login con JWT
+    USERNAME_FIELD = 'email'
     
     class Meta:
         db_table = 'usuario'
@@ -37,12 +36,11 @@ class Usuario(AbstractBaseUser):
 
 class Cliente(models.Model):
     id_cliente = models.BigAutoField(primary_key=True)
-    # Relación 1 a 1 según el diagrama
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, db_column='id_usuario')
-    rut = models.CharField(max_length=9)
+    rut = models.CharField(max_length=9, blank=True, null=True)
     nombre = models.CharField(max_length=255)
     apellido = models.CharField(max_length=255)
-    telefono = models.CharField(max_length=50)
+    telefono = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         db_table = 'cliente'
@@ -52,12 +50,11 @@ class Cliente(models.Model):
 
 class Empleado(models.Model):
     id_empleado = models.BigAutoField(primary_key=True)
-    # Relación 1 a 1 para el empleado
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, db_column='id_usuario')
     rut = models.CharField(max_length=9)
     nombre = models.CharField(max_length=255)
     apellido = models.CharField(max_length=255)
-    telefono = models.CharField(max_length=50)
+    telefono = models.CharField(max_length=50, blank=True, null=True)
     cargo = models.CharField(max_length=100)
     estado = models.BooleanField(default=True)
 
@@ -69,7 +66,6 @@ class Empleado(models.Model):
 
 class Direccion(models.Model):
     id_direccion = models.AutoField(primary_key=True)
-    # Relación 1 a N: Un usuario puede tener muchas direcciones
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, db_column='id_usuario', related_name='direcciones')
     pais = models.CharField(max_length=100)
     region = models.CharField(max_length=100)
@@ -86,3 +82,33 @@ class Direccion(models.Model):
 
     def __str__(self):
         return f"{self.alias} - {self.direccion}"
+
+# --- NUEVOS MODELOS PARA PRODUCTOS E INVENTARIO ---
+
+class Categoria(models.Model):
+    id_categoria = models.BigAutoField(primary_key=True)
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'categoria'
+
+    def __str__(self):
+        return self.nombre
+
+class Producto(models.Model):
+    id_producto = models.BigAutoField(primary_key=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, db_column='id_categoria')
+    nombre = models.CharField(max_length=255)
+    descripcion = models.TextField(blank=True, null=True)
+    precio_venta = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    stock_total = models.IntegerField(default=0)
+    stock_reservado = models.IntegerField(default=0)
+    tipo_venta = models.CharField(max_length=50, default='Unidad')
+    estado = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'producto'
+
+    def __str__(self):
+        return self.nombre

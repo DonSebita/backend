@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,7 +51,9 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'USER_ID_FIELD': 'id_usuario', # Le decimos que use tu campo personalizado en lugar de 'id'
+    'USER_ID_FIELD': 'id_usuario', # La que ya teníamos
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30), # El token de acceso expira en 30 minutos
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # El token para refrescarlo dura 1 día
 }
 
 MIDDLEWARE = [

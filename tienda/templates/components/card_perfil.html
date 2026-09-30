@@ -1,25 +1,35 @@
-{% load static %}
-<div class="card-perfil">
-    <div class="perfil-header">
-        <img src="{% static 'img/icon.png' %}" alt="Foto de perfil" class="perfil-img-large">
-        <h2 id="perfil-nombre">Cargando perfil...</h2>
-        <p id="perfil-rol" style="opacity: 0.8; margin-top: 5px; text-transform: capitalize;"></p>
+<div class="dashboard-card" id="seccion-perfil">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h2 style="color: var(--verde-oscuro); margin-top: 0;">Detalles Personales</h2>
+            <p style="color: #6B7280; margin-bottom: 30px;">Actualiza tu información. Haz doble clic en una casilla para editarla.</p>
+        </div>
+        <button type="button" class="btn-outline" onclick="habilitarEdicion()">Modificar Datos</button>
     </div>
-    <div class="perfil-body">
-        <div class="perfil-item">
-            <strong>Correo Electrónico:</strong> 
-            <span id="perfil-email">...</span>
+    
+    <form id="form-perfil">
+        <div class="form-grid">
+            <div class="form-group">
+                <label style="font-weight: bold; color: var(--verde-oscuro);">Nombre Completo</label>
+                <input type="text" id="perfil-nombre" class="form-control" placeholder="Ej. Juan Pérez" readonly ondblclick="habilitarCampo(this)">
+            </div>
+            <div class="form-group">
+                <label style="font-weight: bold; color: var(--verde-oscuro);">Correo Electrónico</label>
+                <input type="email" id="perfil-email" class="form-control" placeholder="tucorreo@ejemplo.com" readonly title="El correo no se puede modificar">
+            </div>
+            <div class="form-group">
+                <label style="font-weight: bold; color: var(--verde-oscuro);">Teléfono</label>
+                <input type="text" id="perfil-telefono" class="form-control" placeholder="Ej. +56912345678" readonly ondblclick="habilitarCampo(this)">
+            </div>
+            <div class="form-group">
+                <label style="font-weight: bold; color: var(--verde-oscuro);">RUT</label>
+                <input type="text" id="perfil-rut" class="form-control" placeholder="Ej. 12345678-9" readonly ondblclick="habilitarCampo(this)">
+            </div>
         </div>
-        <div class="perfil-item">
-            <strong>Teléfono de Contacto:</strong> 
-            <span id="perfil-telefono">No registrado</span>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+            <button type="submit" class="btn" id="btn-guardar-perfil" style="display: none;">Guardar Cambios</button>
+            <button type="button" class="btn-danger" onclick="eliminarCuenta()">Eliminar Cuenta</button>
         </div>
-        <div class="perfil-item">
-            <strong>Dirección de Envío:</strong> 
-            <span id="perfil-direccion">No registrada</span>
-        </div>
-        <div style="text-align: center; margin-top: 30px;">
-            <button class="btn">Editar Datos</button>
-        </div>
-    </div>
+    </form>
 </div>

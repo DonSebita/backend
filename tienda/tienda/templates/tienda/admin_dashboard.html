@@ -1,8 +1,606 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div style="padding: 40px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-    <h1 style="color: var(--verde-oscuro);">Panel de Administración 🌿</h1>
-    <p>Bienvenido al centro de control. Desde aquí gestionaremos inventario, órdenes y empleados próximamente.</p>
+<style>
+    .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+    
+    /* ESTILOS DEL DASHBOARD ADMIN */
+    .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+    .admin-box {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        border-top: 5px solid var(--verde-claro);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .admin-box h3 {
+        margin-top: 0;
+        color: var(--verde-oscuro);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    /* Semáforo de Ventas */
+    .semaforo-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 15px;
+        color: var(--texto-oscuro);
+    }
+    .dot { height: 16px; width: 16px; border-radius: 50%; display: inline-block; }
+    .dot-red { background-color: #EF4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+    .dot-yellow { background-color: #F59E0B; box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+    .dot-green { background-color: #10B981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+</style>
+
+<div class="dashboard-layout">
+    <!-- Barra Lateral Admin -->
+    <aside class="sidebar">
+        <div class="sidebar-perfil">
+            <img src="{% static 'img/icon.png' %}" alt="Admin" class="nav-profile-img" style="width: 50px; height: 50px;">
+            <div>
+                <strong style="color: var(--verde-oscuro); display: block;">Administración</strong>
+                <small style="color: #6B7280;">Panel de Control</small>
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active" id="menu-resumen"><a href="#" onclick="mostrarSeccionAdmin('resumen')">Dashboard Principal</a></li>
+            <li id="menu-inventario"><a href="#" onclick="mostrarSeccionAdmin('inventario')">Inventario (Productos)</a></li>
+            <li id="menu-categorias"><a href="#" onclick="mostrarSeccionAdmin('categorias')">Gestión de Categorías</a></li>
+            <li id="menu-ventas"><a href="#" onclick="mostrarSeccionAdmin('ventas')">Gestión de Ventas</a></li>
+            <li id="menu-usuarios"><a href="#" onclick="mostrarSeccionAdmin('usuarios')">Clientes y Trabajadores</a></li>
+        </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-content">
+        
+        <!-- SECCIÓN 1: DASHBOARD PRINCIPAL (LAS 4 CAJAS) -->
+        <div id="seccion-resumen" style="display: block;">
+            <h2 style="color: var(--verde-oscuro); margin-top: 0; margin-bottom: 25px;">Vista General del Negocio</h2>
+            
+            <div class="admin-grid">
+                <!-- Caja 1: Inventario -->
+                <div class="admin-box" style="border-top-color: #3B82F6;">
+                    <h3>📦 Inventario Rápido</h3>
+                    <p style="color: #6B7280;">Accede al catálogo para añadir nuevas plantas, maceteros o actualizar stock.</p>
+                    <button class="btn-outline" onclick="mostrarSeccionAdmin('inventario')" style="width: 100%; text-align: center; margin-top: 15px;">Gestionar Productos</button>
+                </div>
+
+                <!-- Caja 2: Semáforo de Ventas y Envíos -->
+                <div class="admin-box" style="border-top-color: #F59E0B;">
+                    <h3>🚦 Estado Operativo</h3>
+                    <div style="margin-top: 10px;">
+                        <div class="semaforo-item"><span class="dot dot-red"></span> <strong>5</strong> Pedidos por enviar</div>
+                        <div class="semaforo-item"><span class="dot dot-yellow"></span> <strong>12</strong> Compras del día (En proceso)</div>
+                        <div class="semaforo-item"><span class="dot dot-green"></span> <strong>8</strong> Envíos despachados</div>
+                    </div>
+                </div>
+
+                <!-- Caja 3: Usuarios -->
+                <div class="admin-box" style="border-top-color: #8B9B7E;">
+                    <h3>👥 Clientes y Personal</h3>
+                    <p style="color: #6B7280;">Asigna roles a tus trabajadores o revisa el listado de clientes registrados.</p>
+                    <button class="btn-outline" onclick="mostrarSeccionAdmin('usuarios')" style="width: 100%; text-align: center; margin-top: 15px;">Administrar Usuarios</button>
+                </div>
+
+                <!-- Caja 4: Resumen de Ventas -->
+                <div class="admin-box" style="border-top-color: #10B981;">
+                    <h3>📈 Ventas Generales</h3>
+                    <h1 style="margin: 10px 0; color: var(--texto-oscuro);">$450.000</h1>
+                    <p style="color: #10B981; font-weight: bold; margin: 0;">+15% esta semana</p>
+                    <button class="btn-outline" onclick="mostrarSeccionAdmin('ventas')" style="width: 100%; text-align: center; margin-top: 15px;">Ver Reporte Detallado</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE CATEGORÍAS -->
+        <div class="dashboard-card" id="seccion-categorias" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: var(--verde-oscuro); margin: 0;">Categorías de Productos</h2>
+                <button class="btn" onclick="toggleFormCategoria()">+ Añadir Categoría</button>
+            </div>
+
+            <div id="form-categoria-container" style="display: none; background: #F7F7F9; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                <h3 style="margin-top: 0; color: var(--verde-oscuro);">Detalles de la Categoría</h3>
+                <form id="form-categoria">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre de la Categoría</label>
+                            <input type="text" id="cat-nombre" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Descripción</label>
+                            <textarea id="cat-descripcion" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                        <button type="button" class="btn-outline" onclick="toggleFormCategoria()">Cancelar</button>
+                        <button type="submit" class="btn">Guardar Categoría</button>
+                    </div>
+                </form>
+            </div>
+
+            <table class="table-modern" id="tabla-categorias">
+                <thead>
+                    <tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr>
+                </thead>
+                <tbody><tr><td colspan="4" style="text-align: center;">Cargando categorías...</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- SECCIÓN 2: INVENTARIO (CRUD PRODUCTOS) -->
+        <div class="dashboard-card" id="seccion-inventario" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: var(--verde-oscuro); margin: 0;">Inventario de Productos</h2>
+                <button class="btn" onclick="toggleFormProducto()">+ Añadir Producto</button>
+            </div>
+
+            <div id="form-producto-container" style="display: none; background: #F7F7F9; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                <h3 style="margin-top: 0; color: var(--verde-oscuro);">Detalles del Producto</h3>
+                <form id="form-producto">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre del Producto</label>
+                            <input type="text" id="prod-nombre" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio ($)</label>
+                            <input type="number" id="prod-precio" class="form-control" required step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Stock Total</label>
+                            <input type="number" id="prod-stock" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="prod-estado" class="form-control">
+                                <option value="true">Activo (Visible)</option>
+                                <option value="false">Inactivo (Oculto)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="prod-categoria" class="form-control" required>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Descripción</label>
+                            <textarea id="prod-descripcion" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                        <button type="button" class="btn-outline" onclick="toggleFormProducto()">Cancelar</button>
+                        <button type="submit" class="btn">Guardar Producto</button>
+                    </div>
+                </form>
+            </div>
+
+            <table class="table-modern" id="tabla-productos">
+                <thead>
+                    <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody><tr><td colspan="6" style="text-align: center;">Cargando productos...</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- SECCIÓN 3: VENTAS -->
+        <div class="dashboard-card" id="seccion-ventas" style="display: none;">
+            <h2 style="color: var(--verde-oscuro); margin-top: 0;">Gestión de Ventas y Envíos</h2>
+            <p style="color: #6B7280;">Panel de control operativo para procesar despachos y transacciones.</p>
+        </div>
+
+        <!-- SECCIÓN 4: CLIENTES Y TRABAJADORES -->
+        <div class="dashboard-card" id="seccion-usuarios" style="display: none;">
+            <div style="display: flex; gap: 20px; border-bottom: 2px solid #EAE5D9; margin-bottom: 20px;">
+                <button onclick="cambiarTabUsuarios('clientes')" id="tab-clientes" style="background: none; border: none; font-size: 16px; font-weight: bold; color: #3B82F6; padding-bottom: 10px; border-bottom: 3px solid #3B82F6; cursor: pointer;">Listado de Clientes</button>
+                <button onclick="cambiarTabUsuarios('trabajadores')" id="tab-trabajadores" style="background: none; border: none; font-size: 16px; font-weight: bold; color: #6B7280; padding-bottom: 10px; cursor: pointer;">Gestión de Trabajadores</button>
+            </div>
+
+            <!-- Panel Clientes -->
+            <div id="panel-clientes">
+                <h3 style="color: var(--verde-oscuro); margin-top: 0;">Clientes Registrados</h3>
+                <table class="table-modern" id="tabla-clientes">
+                    <thead><tr><th>ID</th><th>Nombre Completo</th><th>Email</th><th>RUT</th><th>Teléfono</th><th>Acciones</th></tr></thead>
+                    <tbody><tr><td colspan="6" style="text-align: center;">Cargando clientes...</td></tr></tbody>
+                </table>
+            </div>
+
+            <!-- Panel Trabajadores -->
+            <div id="panel-trabajadores" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: var(--verde-oscuro); margin: 0;">Personal de la Tienda</h3>
+                    <button class="btn" onclick="toggleFormEmpleado()">+ Añadir Trabajador</button>
+                </div>
+
+                <div id="form-empleado-container" style="display: none; background: #F7F7F9; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                    <h3 style="margin-top: 0; color: var(--verde-oscuro);">Detalles del Trabajador</h3>
+                    <form id="form-empleado">
+                        <div class="form-grid">
+                            <div class="form-group"><label>Nombres</label><input type="text" id="emp-nombre" class="form-control" required></div>
+                            <div class="form-group"><label>Apellidos</label><input type="text" id="emp-apellido" class="form-control" required></div>
+                            <div class="form-group"><label>Correo</label><input type="email" id="emp-email" class="form-control" required></div>
+                            <div class="form-group"><label>Contraseña Temporal</label><input type="password" id="emp-pass" class="form-control"></div>
+                            <div class="form-group"><label>RUT</label><input type="text" id="emp-rut" class="form-control" required></div>
+                            <div class="form-group"><label>Teléfono</label><input type="text" id="emp-telefono" class="form-control"></div>
+                            <div class="form-group">
+                                <label>Rol / Cargo</label>
+                                <select id="emp-cargo" class="form-control">
+                                    <option value="Bodeguero">Bodeguero</option>
+                                    <option value="Vendedor">Vendedor</option>
+                                    <option value="Admin">Administrador</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <select id="emp-estado" class="form-control">
+                                    <option value="true">Activo</option>
+                                    <option value="false">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                            <button type="button" class="btn-outline" onclick="toggleFormEmpleado()">Cancelar</button>
+                            <button type="submit" class="btn">Guardar Trabajador</button>
+                        </div>
+                    </form>
+                </div>
+
+                <table class="table-modern" id="tabla-empleados">
+                    <thead><tr><th>Nombre</th><th>Cargo</th><th>Estado</th><th title="Doble clic para cambiar contraseña">Contraseña (Doble clic) ✏️</th><th>Acciones</th></tr></thead>
+                    <tbody><tr><td colspan="5" style="text-align: center;">Cargando personal...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </div>
+
+<script>
+    // --- NAVEGACIÓN DEL PANEL ---
+    function mostrarSeccionAdmin(seccion) {
+        const secciones = ['resumen', 'inventario', 'categorias', 'ventas', 'usuarios'];
+        secciones.forEach(sec => {
+            const elSec = document.getElementById(`seccion-${sec}`);
+            const elMenu = document.getElementById(`menu-${sec}`);
+            if(elSec) elSec.style.display = 'none';
+            if(elMenu) elMenu.classList.remove('active');
+        });
+        
+        document.getElementById(`seccion-${seccion}`).style.display = 'block';
+        document.getElementById(`menu-${seccion}`).classList.add('active');
+
+        if (seccion === 'usuarios') cambiarTabUsuarios('clientes');
+        if (seccion === 'inventario') cargarProductos();
+        if (seccion === 'categorias') cargarCategorias();
+    }
+
+    function toggleFormCategoria() {
+        const div = document.getElementById('form-categoria-container');
+        div.style.display = div.style.display === 'none' ? 'block' : 'none';
+        if(div.style.display === 'none') { document.getElementById('form-categoria').reset(); }
+    }
+
+    async function cargarCategorias() {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch('/api/categorias/', { headers: { 'Authorization': `Bearer ${token}` }});
+        if(res.ok) {
+            const cats = await res.json();
+            const tbody = document.querySelector('#tabla-categorias tbody');
+            tbody.innerHTML = '';
+            if(cats.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay categorías registradas.</td></tr>'; return; }
+            cats.forEach(c => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${c.id_categoria}</td>
+                        <td><strong>${c.nombre}</strong></td>
+                        <td>${c.descripcion || 'Sin descripción'}</td>
+                        <td>-</td>
+                    </tr>
+                `;
+            });
+        }
+    }
+
+    document.getElementById('form-categoria').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('access_token');
+        const datos = {
+            nombre: document.getElementById('cat-nombre').value,
+            descripcion: document.getElementById('cat-descripcion').value
+        };
+
+        const res = await fetch('/api/categorias/', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        });
+        
+        if(res.ok) { 
+            toggleFormCategoria(); 
+            cargarCategorias(); 
+        } else {
+            alert("Error al guardar la categoría.");
+        }
+    });
+
+    // --- INVENTARIO CRUD ---
+    async function cargarCategoriasSelect(categoriaSeleccionadaId = null) {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch('/api/categorias/', { headers: { 'Authorization': `Bearer ${token}` }});
+        if(res.ok) {
+            const cats = await res.json();
+            const select = document.getElementById('prod-categoria');
+            select.innerHTML = '<option value="">Seleccione una categoría</option>';
+            cats.forEach(c => {
+                const selected = c.id_categoria === categoriaSeleccionadaId ? 'selected' : '';
+                select.innerHTML += `<option value="${c.id_categoria}" ${selected}>${c.nombre}</option>`;
+            });
+        }
+    }
+
+    function toggleFormProducto() {
+        const div = document.getElementById('form-producto-container');
+        div.style.display = div.style.display === 'none' ? 'block' : 'none';
+        if(div.style.display === 'block') {
+            cargarCategoriasSelect();
+        } else {
+            document.getElementById('form-producto').reset();
+            productoEditandoId = null;
+        }
+    }
+
+    async function cargarProductos() {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch('/api/productos/', { headers: { 'Authorization': `Bearer ${token}` }});
+        if(res.ok) {
+            const prods = await res.json();
+            const tbody = document.querySelector('#tabla-productos tbody');
+            tbody.innerHTML = '';
+            if(prods.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay productos.</td></tr>'; return; }
+            prods.forEach(p => {
+                const pData = JSON.stringify(p).replace(/"/g, '&quot;');
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${p.id_producto}</td>
+                        <td><strong>${p.nombre}</strong></td>
+                        <td>$${p.precio_venta}</td>
+                        <td>${p.stock_total} un.</td>
+                        <td>${p.estado ? '🟢 Activo' : '🔴 Inactivo'}</td>
+                        <td>
+                            <button onclick="prepararEdicionProducto(${pData})" style="background:none; border:none; color:#3B82F6; cursor:pointer;" title="Editar">✏️</button>
+                            <button onclick="eliminarProducto(${p.id_producto})" style="background:none; border:none; color:#EF4444; cursor:pointer;" title="Eliminar">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+    }
+
+    function prepararEdicionProducto(p) {
+        productoEditandoId = p.id_producto;
+        document.getElementById('prod-nombre').value = p.nombre;
+        document.getElementById('prod-precio').value = p.precio_venta;
+        document.getElementById('prod-stock').value = p.stock_total;
+        document.getElementById('prod-estado').value = p.estado ? "true" : "false";
+        document.getElementById('prod-descripcion').value = p.descripcion || "";
+        
+        cargarCategoriasSelect(p.categoria);
+        document.getElementById('form-producto-container').style.display = 'block';
+    }
+
+    document.getElementById('form-producto').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('access_token');
+        const precioAsignado = document.getElementById('prod-precio').value;
+
+        const datos = {
+            nombre: document.getElementById('prod-nombre').value,
+            categoria: document.getElementById('prod-categoria').value || null,
+            precio_venta: precioAsignado,
+            stock_total: document.getElementById('prod-stock').value,
+            stock_reservado: 0,
+            tipo_venta: 'Unidad',
+            estado: document.getElementById('prod-estado').value === "true",
+            descripcion: document.getElementById('prod-descripcion').value
+        };
+
+        const url = productoEditandoId ? `/api/productos/${productoEditandoId}/` : '/api/productos/';
+        const metodo = productoEditandoId ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+            method: metodo,
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        });
+        
+        if(res.ok) { 
+            toggleFormProducto(); 
+            cargarProductos(); 
+        } else {
+            alert("Error al guardar el producto.");
+        }
+    });
+
+    async function eliminarProducto(id) {
+        if(!confirm("¿Eliminar producto?")) return;
+        const token = localStorage.getItem('access_token');
+        await fetch(`/api/productos/${id}/`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }});
+        cargarProductos();
+    }
+
+    // --- USUARIOS Y TRABAJADORES ---
+    function cambiarTabUsuarios(tab) {
+        document.getElementById('panel-clientes').style.display = tab === 'clientes' ? 'block' : 'none';
+        document.getElementById('panel-trabajadores').style.display = tab === 'trabajadores' ? 'block' : 'none';
+        document.getElementById('tab-clientes').style.color = tab === 'clientes' ? '#3B82F6' : '#6B7280';
+        document.getElementById('tab-clientes').style.borderBottom = tab === 'clientes' ? '3px solid #3B82F6' : 'none';
+        document.getElementById('tab-trabajadores').style.color = tab === 'trabajadores' ? '#3B82F6' : '#6B7280';
+        document.getElementById('tab-trabajadores').style.borderBottom = tab === 'trabajadores' ? '3px solid #3B82F6' : 'none';
+        
+        if(tab === 'clientes') cargarClientes();
+        if(tab === 'trabajadores') cargarEmpleados();
+    }
+
+    async function cargarClientes() {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch('/api/clientes/', { headers: { 'Authorization': `Bearer ${token}` }});
+        if(res.ok) {
+            const cls = await res.json();
+            const tbody = document.querySelector('#tabla-clientes tbody');
+            tbody.innerHTML = '';
+            cls.forEach(c => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${c.id_cliente}</td>
+                        <td>${c.nombre} ${c.apellido}</td>
+                        <td>${c.usuario_detalle ? c.usuario_detalle.email : ''}</td>
+                        <td>${c.rut || 'N/A'}</td>
+                        <td>${c.telefono || 'N/A'}</td>
+                        <td><button onclick="editarClientePrompt(${c.id_cliente}, '${c.nombre}', '${c.apellido}', '${c.rut}', '${c.telefono}')" style="background:none; border:none; color:#3B82F6; cursor:pointer;" title="Modificar">✏️</button></td>
+                    </tr>
+                `;
+            });
+        }
+    }
+
+    async function editarClientePrompt(id, nom, ap, rut, tel) {
+        const nNom = prompt("Modificar Nombre:", nom);
+        if(!nNom) return;
+        const nAp = prompt("Modificar Apellido:", ap);
+        const nRut = prompt("Modificar RUT:", rut);
+        const nTel = prompt("Modificar Teléfono:", tel);
+
+        const token = localStorage.getItem('access_token');
+        await fetch(`/api/clientes/${id}/`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: nNom, apellido: nAp, rut: nRut, telefono: nTel })
+        });
+        cargarClientes();
+    }
+
+    let empleadoEditandoId = null;
+
+    function toggleFormEmpleado() {
+        const div = document.getElementById('form-empleado-container');
+        div.style.display = div.style.display === 'none' ? 'block' : 'none';
+        
+        if (div.style.display === 'none') { 
+            document.getElementById('form-empleado').reset(); 
+            empleadoEditandoId = null; 
+            document.getElementById('emp-email').readOnly = false;
+            document.getElementById('emp-pass').required = true; 
+        }
+    }
+
+    async function cargarEmpleados() {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch('/api/empleados/', { headers: { 'Authorization': `Bearer ${token}` }});
+        if(res.ok) {
+            const emps = await res.json();
+            const tbody = document.querySelector('#tabla-empleados tbody');
+            tbody.innerHTML = '';
+            emps.forEach(e => {
+                const empData = JSON.stringify(e).replace(/"/g, '&quot;');
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${e.nombre} ${e.apellido}</strong><br><small style="color:gray;">${e.usuario_detalle.email}</small></td>
+                        <td>${e.cargo}</td>
+                        <td>${e.estado ? '🟢 Activo' : '🔴 Inactivo'}</td>
+                        <td style="cursor: pointer; color: #3B82F6; font-weight: bold;" ondblclick="cambiarPasswordDobleClic(this, ${e.id_empleado})" title="Doble clic para cambiar">********</td>
+                        <td>
+                            <button onclick="prepararEdicionEmpleado(${empData})" style="background:none; border:none; color:#3B82F6; cursor:pointer;" title="Editar">✏️</button>
+                            <button onclick="eliminarEmpleado(${e.id_empleado})" style="background:none; border:none; color:#EF4444; cursor:pointer;" title="Eliminar">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+    }
+
+    function prepararEdicionEmpleado(emp) {
+        empleadoEditandoId = emp.id_empleado;
+        document.getElementById('emp-nombre').value = emp.nombre;
+        document.getElementById('emp-apellido').value = emp.apellido;
+        document.getElementById('emp-email').value = emp.usuario_detalle.email;
+        document.getElementById('emp-email').readOnly = true; 
+        document.getElementById('emp-pass').required = false; 
+        document.getElementById('emp-rut').value = emp.rut;
+        document.getElementById('emp-telefono').value = emp.telefono;
+        document.getElementById('emp-cargo').value = emp.cargo;
+        document.getElementById('emp-estado').value = emp.estado ? "true" : "false";
+        
+        const formDiv = document.getElementById('form-empleado-container');
+        if (formDiv.style.display === 'none') formDiv.style.display = 'block';
+    }
+
+    document.getElementById('form-empleado').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('access_token');
+        
+        const datos = {
+            nombre: document.getElementById('emp-nombre').value,
+            apellido: document.getElementById('emp-apellido').value,
+            email: document.getElementById('emp-email').value,
+            rut: document.getElementById('emp-rut').value,
+            telefono: document.getElementById('emp-telefono').value,
+            cargo: document.getElementById('emp-cargo').value,
+            estado: document.getElementById('emp-estado').value === "true" 
+        };
+
+        const pass = document.getElementById('emp-pass').value;
+        if (pass) datos.password = pass; 
+
+        const url = empleadoEditandoId ? `/api/empleados/${empleadoEditandoId}/` : '/api/empleados/';
+        const metodo = empleadoEditandoId ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+            method: metodo,
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        });
+        
+        if(res.ok) { 
+            toggleFormEmpleado(); 
+            cargarEmpleados(); 
+            alert(empleadoEditandoId ? 'Trabajador modificado exitosamente.' : 'Trabajador creado exitosamente.');
+        } else { 
+            const errorData = await res.json();
+            alert("Error al procesar el trabajador: " + JSON.stringify(errorData)); 
+        }
+    });
+
+    async function cambiarPasswordDobleClic(td, id) {
+        const p = prompt("Nueva contraseña para el trabajador:");
+        if(p && p.trim() !== "") {
+            td.innerText = "Guardando...";
+            const token = localStorage.getItem('access_token');
+            const res = await fetch(`/api/empleados/${id}/`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: p })
+            });
+            if(res.ok) alert("Contraseña actualizada con éxito.");
+            td.innerText = "********";
+        }
+    }
+
+    async function eliminarEmpleado(id) {
+        if(!confirm("¿Eliminar este trabajador?")) return;
+        const token = localStorage.getItem('access_token');
+        await fetch(`/api/empleados/${id}/`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }});
+        cargarEmpleados();
+    }
+</script>
 {% endblock %}
