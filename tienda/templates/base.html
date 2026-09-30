@@ -23,9 +23,10 @@
             
             <!-- Grupo Usuarios Logueados -->
             <div id="nav-auth" style="display:none; gap:15px; align-items:center;">
-                <a href="{% url 'web_perfil' %}">
+                <!-- Usamos IDs dinámicos para cambiar el texto y enlace según el rol -->
+                <a href="{% url 'web_perfil' %}" id="nav-enlace-usuario">
                     <img src="{% static 'img/icon.png' %}" alt="Foto de perfil" class="nav-profile-img">
-                    Mi Perfil
+                    <span id="nav-texto-usuario">Mi Perfil</span>
                 </a>
                 <a href="#" onclick="cerrarSesion()" class="btn-outline">Cerrar Sesión</a>
             </div>
@@ -40,35 +41,37 @@
         {% block content %}{% endblock %}
     </div>
 
-<script>
-        // Lógica para mostrar los botones correctos según la sesión
+    <script>
+        // Lógica para mostrar los botones correctos y verificar roles
         const token = localStorage.getItem('access_token');
+        const rol = localStorage.getItem('user_rol'); // <-- Leemos el rol guardado
         
         if (token) {
             document.getElementById('nav-guest').style.display = 'none';
             document.getElementById('nav-auth').style.display = 'flex';
 
-            // --- LÓGICA DE EXPULSIÓN AUTOMÁTICA ---
+            // Si el usuario es administrador, vendedor o bodeguero
+            if (rol === 'admin' || rol === 'vendedor' || rol === 'bodeguero') {
+                const enlaceUsuario = document.getElementById('nav-enlace-usuario');
+                enlaceUsuario.href = "{% url 'web_admin_dashboard' %}";
+                document.getElementById('nav-texto-usuario').innerText = "Dashboard";
+            }
+
             try {
-                // 1. Decodificamos el payload del token (la parte central del JWT)
+                // Lógica opcional para la expiración automática del token
                 const payload = JSON.parse(atob(token.split('.')[1]));
-                
-                // 2. Calculamos cuánto tiempo le queda (el JWT guarda el tiempo en segundos, JS usa milisegundos)
                 const tiempoExpiracion = payload.exp * 1000;
                 const tiempoRestante = tiempoExpiracion - Date.now();
 
                 if (tiempoRestante <= 0) {
-                    // Si el token ya caducó mientras la página estaba cerrada, lo echamos al instante
                     cerrarSesion();
                 } else {
-                    // Si aún es válido, programamos un temporizador para expulsarlo en el milisegundo exacto que caduca
                     setTimeout(() => {
                         alert("Tu sesión ha expirado por seguridad. Vuelve a iniciar sesión.");
                         cerrarSesion();
                     }, tiempoRestante);
                 }
             } catch (error) {
-                // Si el token fue manipulado o está corrupto, cerramos sesión por seguridad
                 cerrarSesion();
             }
         }
@@ -76,9 +79,9 @@
         function cerrarSesion() {
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
+            localStorage.removeItem('user_rol'); // <-- Limpiamos el rol al cerrar sesión
             window.location.href = "{% url 'web_login' %}";
         }
     </script>
-    
 </body>
 </html>
