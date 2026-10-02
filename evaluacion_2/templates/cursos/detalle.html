@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ course.title }} | EdTech
+{% endblock %}
+
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+
+    <div class="grid lg:grid-cols-3 gap-10">
+
+
+        <!-- Información -->
+
+        <div class="lg:col-span-2">
+
+            <span class="text-indigo-400
+                         text-sm font-semibold">
+                CURSO ONLINE
+            </span>
+
+            <h1 class="text-4xl
+                       md:text-5xl
+                       font-extrabold
+                       mt-3">
+
+                {{ course.title }}
+
+            </h1>
+
+            <p class="text-lg text-slate-400
+                      mt-5 max-w-3xl">
+
+                {{ course.description }}
+
+            </p>
+
+
+            <div class="flex items-center gap-5
+                        mt-6 text-sm">
+
+                <span class="text-yellow-400">
+                    ★★★★★
+                </span>
+
+                <span class="text-slate-500">
+                    Curso online
+                </span>
+
+                <span class="text-slate-500">
+                    Acceso inmediato
+                </span>
+
+            </div>
+
+
+            <div class="mt-10
+                        border-t border-slate-800
+                        pt-8">
+
+                <h2 class="text-2xl font-bold">
+                    ¿Qué aprenderás?
+                </h2>
+
+                <div class="grid md:grid-cols-2
+                            gap-4 mt-5">
+
+                    <div class="flex gap-3">
+                        <span class="text-green-400">✓</span>
+                        <span class="text-slate-400">
+                            Conceptos fundamentales
+                        </span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <span class="text-green-400">✓</span>
+                        <span class="text-slate-400">
+                            Ejercicios prácticos
+                        </span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <span class="text-green-400">✓</span>
+                        <span class="text-slate-400">
+                            Aplicación de conocimientos
+                        </span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <span class="text-green-400">✓</span>
+                        <span class="text-slate-400">
+                            Acceso al contenido
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Compra -->
+
+        <aside>
+
+            <div class="sticky top-24
+                        bg-slate-900
+                        border border-slate-800
+                        rounded-2xl
+                        overflow-hidden
+                        shadow-xl">
+
+                <img src="https://picsum.photos/seed/course-detail-{{ course.id }}/700/400"
+                    class="w-full h-52 object-cover">
+
+                <div class="p-6">
+
+                    <p class="text-sm text-slate-500">
+                        Precio
+                    </p>
+
+                    <p class="text-3xl
+                              font-extrabold
+                              mt-1">
+
+                        ${{ course.price }}
+
+                    </p>
+
+
+                    {% if request.user.is_authenticated %}
+
+                    <form method="post" action="/api/carro/add/" class="mt-6">
+
+                        {% csrf_token %}
+
+                        <input type="hidden" name="course_id" value="{{ course.id }}">
+
+                        <button type="submit" class="w-full
+                                   bg-indigo-600
+                                   hover:bg-indigo-500
+                                   py-3
+                                   rounded-lg
+                                   font-bold">
+
+                            🛒 Agregar al carrito
+
+                        </button>
+
+                    </form>
+
+                    {% else %}
+
+                    <a href="/login/" class="block text-center
+                               bg-indigo-600
+                               hover:bg-indigo-500
+                               py-3
+                               rounded-lg
+                               font-bold
+                               mt-6">
+
+                        Inicia sesión para comprar
+
+                    </a>
+
+                    {% endif %}
+
+
+                    <p class="text-center
+                              text-xs
+                              text-slate-600
+                              mt-4">
+
+                        Acceso al curso después de la compra.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+{% endblock %}

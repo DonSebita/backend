@@ -1,0 +1,175 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}EdTech{% endblock %}
+    </title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-slate-950 text-white min-h-screen flex flex-col">
+
+
+    <!-- ========================= -->
+    <!-- NAVBAR -->
+    <!-- ========================= -->
+
+    <nav class="sticky top-0 z-50
+                bg-slate-950/95
+                backdrop-blur
+                border-b border-slate-800">
+
+        <div class="max-w-7xl mx-auto
+                    px-6 py-4
+                    flex items-center
+                    justify-between">
+
+
+            <!-- LOGO -->
+
+            <a href="{% url 'index' %}" class="flex items-center gap-2
+                      text-2xl font-extrabold
+                      text-indigo-400">
+
+                <span class="text-white">
+                    Ed
+                </span>
+
+                <span>
+                    Tech
+                </span>
+
+            </a>
+
+
+            <!-- NAVIGATION -->
+
+            <div class="flex items-center gap-6">
+
+                {% if request.user.is_authenticated %}
+
+                {% if request.user.is_staff or request.user.is_superuser or request.user.role == 'COORDINATOR' %}
+                    {# Menú del Coordinador / Admin #}
+                    <a href="{% url 'admin_dashboard' %}" class="text-slate-300 hover:text-white transition">
+                        Panel Admin
+                    </a>
+                    <a href="{% url 'admin_cursos' %}" class="text-slate-300 hover:text-white transition">
+                        Cursos
+                    </a>
+                    <a href="{% url 'admin_ordenes' %}" class="text-slate-300 hover:text-white transition">
+                        Órdenes
+                    </a>
+                {% else %}
+                    {# Menú del Estudiante #}
+                    <a href="{% url 'estudiante_dashboard' %}" class="text-slate-300 hover:text-white transition">
+                        Mi aprendizaje
+                    </a>
+                    <a href="{% url 'estudiante_carrito' %}" class="text-slate-300 hover:text-white transition">
+                        🛒 Carrito
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'logout' %}" class="text-slate-300 hover:text-white transition">
+                    Salir
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'login' %}" class="text-slate-300 hover:text-white transition">
+                    Ingresar
+                </a>
+
+                <a href="{% url 'register' %}" class="bg-indigo-600 hover:bg-indigo-500
+                              px-4 py-2 rounded-lg font-semibold transition">
+                    Registrarse
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ========================= -->
+    <!-- CONTENIDO -->
+    <!-- ========================= -->
+
+    <main class="flex-1">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- ========================= -->
+    <!-- FOOTER -->
+    <!-- ========================= -->
+
+    <footer class="border-t border-slate-800
+                   bg-slate-950">
+
+        <div class="max-w-7xl mx-auto
+                    px-6 py-8
+                    flex flex-col
+                    md:flex-row
+                    items-center
+                    justify-between
+                    gap-4">
+
+            <div>
+
+                <span class="font-bold text-white">
+                    EdTech
+                </span>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Aprende. Mejora. Crece.
+                </p>
+
+            </div>
+
+
+            <div class="text-sm text-slate-500 text-center md:text-right">
+
+                Alumno:
+                {{ nombre|default:"Sebastian Lucas Eduardo Sandoval" }}
+
+                <span class="mx-2">
+                    •
+                </span>
+
+                Sección:
+                {{ seccion|default:"Sección 1" }}
+
+                <span class="mx-2">
+                    •
+                </span>
+
+                Año:
+                2026
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+</body>
+
+</html>

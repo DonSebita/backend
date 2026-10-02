@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Órdenes | EdTech Admin{% endblock %}
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+
+    <div class="mb-8">
+        <p class="text-indigo-400 text-sm font-semibold">ADMINISTRACIÓN</p>
+        <h1 class="text-3xl font-extrabold mt-1">Órdenes</h1>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-slate-950">
+                    <tr>
+                        <th class="px-6 py-4">#</th>
+                        <th class="px-6 py-4">Estudiante</th>
+                        <th class="px-6 py-4">Cursos</th>
+                        <th class="px-6 py-4">Total</th>
+                        <th class="px-6 py-4">Estado</th>
+                        <th class="px-6 py-4">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for orden in ordenes %}
+                    <tr class="border-t border-slate-800">
+                        <td class="px-6 py-4 text-slate-500">#{{ orden.id }}</td>
+                        <td class="px-6 py-4 font-medium">{{ orden.user.username }}</td>
+                        <td class="px-6 py-4 text-slate-400">
+                            {% for item in orden.items.all %}
+                            <span class="block text-sm">{{ item.course.title }}</span>
+                            {% endfor %}
+                        </td>
+                        <td class="px-6 py-4 font-bold">
+                            ${% for item in orden.items.all %}{{ item.price_at_purchase }}{% endfor %}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold
+                                {% if orden.status == 'PAGADO' %}bg-green-500/20 text-green-400
+                                {% elif orden.status == 'CANCELADO' %}bg-red-500/20 text-red-400
+                                {% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
+                                {{ orden.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-slate-400 text-sm">{{ orden.created_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-10 text-center text-slate-500">No existen órdenes.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <a href="{% url 'admin_dashboard' %}" class="text-slate-400 hover:text-white text-sm">← Volver al panel</a>
+    </div>
+
+</section>
+{% endblock %}

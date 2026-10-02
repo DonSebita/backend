@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Cursos | EdTech
+{% endblock %}
+
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+
+    <div class="mb-10">
+
+        <p class="text-indigo-400 font-semibold text-sm uppercase">
+            Catálogo
+        </p>
+
+        <h1 class="text-4xl font-extrabold mt-2">
+            Explora nuestros cursos
+        </h1>
+
+        <p class="text-slate-500 mt-3">
+            Encuentra el curso que necesitas para seguir aprendiendo.
+        </p>
+
+    </div>
+
+
+    <!-- Filtros -->
+
+    <div class="grid md:grid-cols-4 gap-4 mb-10">
+
+        <input type="text" placeholder="Buscar cursos..." class="md:col-span-2
+                   bg-slate-900
+                   border border-slate-800
+                   rounded-lg px-4 py-3
+                   outline-none
+                   focus:border-indigo-500">
+
+        <select class="bg-slate-900
+                   border border-slate-800
+                   rounded-lg px-4 py-3">
+
+            <option>Todas las áreas</option>
+
+        </select>
+
+        <select class="bg-slate-900
+                   border border-slate-800
+                   rounded-lg px-4 py-3">
+
+            <option>Ordenar por</option>
+            <option>Precio menor</option>
+            <option>Precio mayor</option>
+            <option>Más recientes</option>
+
+        </select>
+
+    </div>
+
+
+    <!-- Cursos -->
+
+    <div class="grid sm:grid-cols-2
+                lg:grid-cols-3
+                xl:grid-cols-4
+                gap-6">
+
+        {% for course in courses %}
+
+        <article class="bg-slate-900
+                        border border-slate-800
+                        rounded-xl overflow-hidden
+                        hover:border-indigo-500/50
+                        transition">
+
+            <img src="https://picsum.photos/seed/course-{{ course.id }}/600/350" class="w-full h-44 object-cover">
+
+            <div class="p-5">
+
+                <h2 class="font-bold">
+                    {{ course.title }}
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-2">
+                    {{ course.instructor|default:"Equipo EdTech" }}
+                </p>
+
+                <div class="flex justify-between
+                            items-center mt-5">
+
+                    <span class="text-xl font-bold">
+                        ${{ course.price }}
+                    </span>
+
+                    <a href="/cursos/{{ course.id }}/" class="bg-indigo-600
+                               hover:bg-indigo-500
+                               px-4 py-2
+                               rounded-lg
+                               text-sm
+                               font-semibold">
+
+                        Ver curso
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <p class="text-slate-500">
+            No hay cursos disponibles.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

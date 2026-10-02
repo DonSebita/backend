@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Mi perfil | EdTech{% endblock %}
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-12">
+
+    <div class="mb-8">
+        <p class="text-indigo-400 font-semibold text-sm uppercase">Mi cuenta</p>
+        <h1 class="text-3xl font-extrabold mt-2">Mi perfil</h1>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6">
+
+        <div class="flex items-center gap-6">
+            <div class="w-20 h-20 rounded-full bg-indigo-600 flex items-center justify-center text-3xl font-bold">
+                {{ usuario.username|first|upper }}
+            </div>
+            <div>
+                <p class="text-xl font-bold">{{ usuario.username }}</p>
+                <p class="text-slate-400 mt-1">{{ usuario.email }}</p>
+                <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold
+                    {% if usuario.role == 'COORDINATOR' %}bg-purple-500/20 text-purple-300{% else %}bg-indigo-500/20 text-indigo-300{% endif %}">
+                    {% if usuario.role == 'COORDINATOR' %}Coordinador{% else %}Estudiante{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-800 pt-6 grid sm:grid-cols-2 gap-4 text-sm text-slate-400">
+            <div>
+                <p class="text-xs text-slate-600 uppercase mb-1">Nombre de usuario</p>
+                <p class="text-white font-medium">{{ usuario.username }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-slate-600 uppercase mb-1">Correo electrónico</p>
+                <p class="text-white font-medium">{{ usuario.email }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-slate-600 uppercase mb-1">Fecha de registro</p>
+                <p class="text-white font-medium">{{ usuario.date_joined|date:"d/m/Y" }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-slate-600 uppercase mb-1">Rol</p>
+                <p class="text-white font-medium">{{ usuario.get_role_display|default:usuario.role }}</p>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-800 pt-6 flex gap-4">
+            <a href="{% url 'estudiante_dashboard' %}"
+               class="bg-slate-800 hover:bg-slate-700 px-5 py-2.5 rounded-lg text-sm font-semibold transition">
+                ← Volver al panel
+            </a>
+            <a href="{% url 'logout' %}"
+               class="bg-red-900/30 hover:bg-red-900/50 border border-red-800 text-red-400 px-5 py-2.5 rounded-lg text-sm font-semibold transition">
+                Cerrar sesión
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

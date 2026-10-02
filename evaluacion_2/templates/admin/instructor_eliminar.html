@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar instructor | EdTech Admin{% endblock %}
+
+{% block content %}
+
+<section class="max-w-xl mx-auto px-6 py-12">
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+
+        <p class="text-red-400 text-sm font-semibold uppercase">
+            Administración
+        </p>
+
+        <h1 class="text-2xl font-bold mt-2">
+            Eliminar instructor
+        </h1>
+
+        <p class="text-slate-400 mt-4">
+            ¿Estás seguro de que deseas eliminar al instructor
+            <strong class="text-white">
+                {{ instructor.first_name }} {{ instructor.last_name }}
+            </strong>
+            ({{ instructor.username }})?
+        </p>
+
+        <p class="text-sm text-red-400 mt-3">
+            Esta acción no se puede deshacer.
+        </p>
+
+        <form method="POST" class="flex gap-4 mt-8">
+            {% csrf_token %}
+
+            <button type="submit" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg font-semibold transition">
+                Sí, eliminar
+            </button>
+
+            <a href="{% url 'admin_instructores' %}"
+                class="bg-slate-800 hover:bg-slate-700 px-6 py-3 rounded-lg transition">
+                Cancelar
+            </a>
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

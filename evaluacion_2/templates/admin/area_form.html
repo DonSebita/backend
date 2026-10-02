@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ accion|default:"Área" }} | EdTech Admin{% endblock %}
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-12">
+
+    <h1 class="text-3xl font-extrabold mb-8">{{ accion|default:"Área" }}</h1>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="space-y-5">
+                {% for field in form %}
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">{{ field.label }}</label>
+                    <div class="[&>input]:w-full [&>input]:bg-slate-800 [&>input]:border [&>input]:border-slate-700 [&>input]:rounded-lg [&>input]:px-4 [&>input]:py-2.5 [&>input]:text-white [&>input]:outline-none
+                                [&>textarea]:w-full [&>textarea]:bg-slate-800 [&>textarea]:border [&>textarea]:border-slate-700 [&>textarea]:rounded-lg [&>textarea]:px-4 [&>textarea]:py-2.5 [&>textarea]:text-white [&>textarea]:outline-none
+                                [&>select]:w-full [&>select]:bg-slate-800 [&>select]:border [&>select]:border-slate-700 [&>select]:rounded-lg [&>select]:px-4 [&>select]:py-2.5 [&>select]:text-white [&>select]:outline-none">
+                        {{ field }}
+                    </div>
+                    {% if field.errors %}<p class="mt-1 text-sm text-red-400">{{ field.errors|join:", " }}</p>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="flex gap-4 mt-8">
+                <button type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-lg font-semibold">
+                    Guardar
+                </button>
+                <a href="{% url 'admin_areas' %}"
+                   class="bg-slate-800 hover:bg-slate-700 px-6 py-3 rounded-lg">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

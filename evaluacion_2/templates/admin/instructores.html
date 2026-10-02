@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Instructores | EdTech Admin{% endblock %}
+{% block content %}
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <p class="text-indigo-400 text-sm font-semibold uppercase">Administración</p>
+            <h1 class="text-3xl font-extrabold mt-2">Instructores</h1>
+        </div>
+        <a href="{% url 'admin_instructor_nuevo' %}"
+            class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg font-semibold transition">
+            + Nuevo Instructor
+        </a>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-800 border-b border-slate-700 text-slate-300">
+                    <th class="p-4 font-semibold">Usuario / Nombre</th>
+                    <th class="p-4 font-semibold">Correo</th>
+                    <th class="p-4 font-semibold">Fecha registro</th>
+                    <th class="p-4 font-semibold">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for instructor in instructores %}
+                <tr class="border-b border-slate-800 hover:bg-slate-800/50 transition">
+                    <td class="p-4">
+                        <p class="font-bold text-white">{{ instructor.username }}</p>
+                        <p class="text-sm text-slate-400">{{ instructor.first_name }} {{ instructor.last_name }}</p>
+                    </td>
+                    <td class="p-4 text-slate-300">{{ instructor.email }}</td>
+                    <td class="p-4 text-slate-400">{{ instructor.date_joined|date:"d M Y" }}</td>
+                    <td class="p-4">
+                        <div class="flex gap-2">
+
+                            <a href="{% url 'admin_instructor_editar' instructor.pk %}"
+                                class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-sm transition">
+                                Editar
+                            </a>
+
+                            <a href="{% url 'admin_instructor_eliminar' instructor.pk %}"
+                                class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm transition">
+                                Eliminar
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="p-8 text-center text-slate-500">No hay instructores registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-6">
+        <a href="{% url 'admin_dashboard' %}" class="text-slate-400 hover:text-white text-sm">← Volver al panel</a>
+    </div>
+</section>
+{% endblock %}

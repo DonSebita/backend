@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Carrito | EdTech{% endblock %}
+{% block content %}
+
+<section class="max-w-5xl mx-auto px-6 py-12">
+
+    <div class="mb-8">
+        <p class="text-indigo-400 font-semibold text-sm uppercase">Mi carrito</p>
+        <h1 class="text-3xl font-extrabold mt-2">Carrito de compras</h1>
+    </div>
+
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for msg in messages %}
+        <div class="px-4 py-3 rounded-lg {% if msg.tags == 'error' %}bg-red-900/40 border border-red-700 text-red-300{% else %}bg-green-900/40 border border-green-700 text-green-300{% endif %}">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if items %}
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+
+        <table class="w-full text-left">
+            <thead class="bg-slate-950">
+                <tr>
+                    <th class="px-6 py-4">Curso</th>
+                    <th class="px-6 py-4">Precio</th>
+                    <th class="px-6 py-4">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr class="border-t border-slate-800">
+                    <td class="px-6 py-4 font-medium">{{ item.course.title }}</td>
+                    <td class="px-6 py-4 text-indigo-400 font-bold">${{ item.course.enrollment_cost }}</td>
+                    <td class="px-6 py-4">
+                        <form method="post" action="{% url 'carrito_eliminar' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-400 hover:text-red-300 text-sm">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="px-6 py-5 border-t border-slate-800 flex items-center justify-between">
+            <div>
+                <span class="text-slate-500 text-sm">Total</span>
+                <p class="text-2xl font-extrabold text-white">${{ total }}</p>
+            </div>
+            <form method="post" action="{% url 'checkout_html' %}">
+                {% csrf_token %}
+                <button type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-xl font-bold transition">
+                    Pagar ahora 💳
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    {% else %}
+    <div class="border border-dashed border-slate-700 rounded-2xl p-16 text-center">
+        <div class="text-5xl mb-4">🛒</div>
+        <h3 class="text-xl font-bold">Tu carrito está vacío</h3>
+        <p class="text-slate-500 mt-2">Agrega cursos desde el catálogo.</p>
+        <a href="{% url 'index' %}" class="inline-block mt-6 text-indigo-400 hover:text-indigo-300">
+            Explorar cursos →
+        </a>
+    </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}

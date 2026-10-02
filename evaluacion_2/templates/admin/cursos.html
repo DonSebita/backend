@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Gestionar cursos | EdTech
+{% endblock %}
+
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+
+    <div class="flex flex-col md:flex-row
+                md:items-center
+                md:justify-between
+                gap-4 mb-8">
+
+        <div>
+
+            <p class="text-indigo-400 text-sm font-semibold">
+                ADMINISTRACIÓN
+            </p>
+
+            <h1 class="text-3xl font-extrabold mt-1">
+                Cursos
+            </h1>
+
+        </div>
+
+
+        <a href="{% url 'admin_curso_nuevo' %}" class="bg-indigo-600
+                  hover:bg-indigo-500
+                  px-5 py-3
+                  rounded-lg
+                  font-semibold">
+
+            + Crear curso
+
+        </a>
+
+    </div>
+
+
+    <div class="bg-slate-900
+                border border-slate-800
+                rounded-xl overflow-hidden">
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-left">
+
+                <thead class="bg-slate-950">
+
+                    <tr>
+
+                        <th class="px-6 py-4">
+                            Curso
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Precio
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Capacidad
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Acciones
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for course in courses %}
+
+                    <tr class="border-t border-slate-800">
+
+                        <td class="px-6 py-4 font-medium">
+                            {{ course.title }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            ${{ course.enrollment_cost }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            {{ course.available_capacity }}
+                        </td>
+
+                        <td class="px-6 py-4">
+
+                            <div class="flex gap-3">
+
+                                <a href="{% url 'admin_curso_editar' course.id %}" class="text-indigo-400">
+
+                                    Editar
+
+                                </a>
+
+                                <a href="{% url 'admin_curso_eliminar' course.id %}" class="text-red-400">
+
+                                    Eliminar
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="px-6 py-10
+                                   text-center
+                                   text-slate-500">
+
+                            No existen cursos.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

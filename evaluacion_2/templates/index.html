@@ -1,0 +1,713 @@
+{% extends 'base.html' %}
+
+{% block title %}
+EdTech | Aprende nuevas habilidades
+{% endblock %}
+
+{% block content %}
+
+<div class="bg-slate-950 text-white">
+
+  <!-- ========================= -->
+  <!-- HERO -->
+  <!-- ========================= -->
+
+  <section class="relative overflow-hidden">
+
+    <!-- Background decorations -->
+    <div class="absolute inset-0">
+      <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
+      <div class="absolute top-20 right-0 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 py-20 lg:py-28">
+
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+        <!-- Hero text -->
+        <div>
+
+          <span class="inline-flex items-center px-4 py-2 rounded-full
+                                 bg-indigo-500/10 border border-indigo-500/20
+                                 text-indigo-300 text-sm font-medium mb-6">
+
+            🚀 Aprende. Mejora. Crece.
+
+          </span>
+
+          <h1 class="text-4xl md:text-5xl lg:text-6xl
+                               font-extrabold leading-tight tracking-tight">
+
+            Aprende nuevas habilidades
+            <span class="text-indigo-400">
+              y lleva tu carrera al siguiente nivel.
+            </span>
+
+          </h1>
+
+          <p class="mt-6 text-lg text-slate-400 max-w-xl leading-relaxed">
+
+            Descubre cursos prácticos creados para ayudarte
+            a desarrollar nuevas habilidades y avanzar
+            profesionalmente.
+
+          </p>
+
+
+          <!-- Search -->
+          <div class="mt-8">
+
+            <div class="flex flex-col sm:flex-row gap-3
+                                    bg-slate-900 border border-slate-800
+                                    rounded-xl p-2 shadow-xl">
+
+              <div class="flex items-center flex-1 px-3">
+
+                <svg class="w-5 h-5 text-slate-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-4.35-4.35m2.35-5.65a8 8 0 11-16 0 8 8 0 0116 0z" />
+
+                </svg>
+
+                <input type="text" placeholder="¿Qué quieres aprender?" class="w-full bg-transparent outline-none
+                                           text-white placeholder-slate-500">
+
+              </div>
+
+              <button class="bg-indigo-600 hover:bg-indigo-500
+                                       transition px-7 py-3 rounded-lg
+                                       font-semibold">
+
+                Buscar cursos
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- Small stats -->
+          <div class="flex flex-wrap gap-8 mt-8 text-sm">
+
+            <div>
+              <span class="block text-2xl font-bold">
+                +100
+              </span>
+
+              <span class="text-slate-500">
+                Cursos
+              </span>
+            </div>
+
+            <div>
+              <span class="block text-2xl font-bold">
+                +50
+              </span>
+
+              <span class="text-slate-500">
+                Instructores
+              </span>
+            </div>
+
+            <div>
+              <span class="block text-2xl font-bold">
+                24/7
+              </span>
+
+              <span class="text-slate-500">
+                Acceso
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Hero visual -->
+        <div class="hidden lg:block">
+
+          <div class="relative">
+
+            <div class="absolute inset-0 bg-indigo-600/20
+                                    blur-3xl rounded-full">
+            </div>
+
+            <div class="relative bg-slate-900
+                                    border border-slate-800
+                                    rounded-3xl p-6 shadow-2xl">
+
+              <div class="flex items-center justify-between mb-6">
+
+                <div>
+
+                  <p class="text-sm text-slate-500">
+                    Curso destacado
+                  </p>
+
+                  <h3 class="text-xl font-bold mt-1">
+                    Desarrollo Web Moderno
+                  </h3>
+
+                </div>
+
+                <span class="bg-green-500/10
+                                             text-green-400
+                                             px-3 py-1 rounded-full
+                                             text-sm">
+                  Nuevo
+                </span>
+
+              </div>
+
+
+              <div class="h-52 rounded-2xl overflow-hidden mb-6">
+
+                <img src="https://picsum.photos/seed/edtech-featured/900/500" alt="Curso destacado"
+                  class="w-full h-full object-cover">
+
+              </div>
+
+
+              <div class="flex items-center justify-between">
+
+                <div>
+
+                  <p class="text-sm text-slate-500">
+                    Instructor
+                  </p>
+
+                  <p class="font-medium">
+                    Equipo EdTech
+                  </p>
+
+                </div>
+
+                <div class="text-right">
+
+                  <p class="text-sm text-slate-500">
+                    Desde
+                  </p>
+
+                  <p class="text-2xl font-bold text-indigo-400">
+                    $29.990
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================= -->
+  <!-- CATEGORÍAS -->
+  <!-- ========================= -->
+
+  <section class="border-y border-slate-800 bg-slate-900/50">
+
+    <div class="max-w-7xl mx-auto px-6 py-10">
+
+      <div class="flex items-center justify-between mb-6">
+
+        <div>
+
+          <p class="text-sm text-indigo-400 font-semibold uppercase">
+            Explora
+          </p>
+
+          <h2 class="text-2xl font-bold mt-1">
+            Aprende sobre lo que te interesa
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <a href="#cursos" class="group bg-slate-900 border border-slate-800
+                          hover:border-indigo-500/50
+                          rounded-xl p-5 transition">
+
+          <div class="text-3xl mb-3">
+            💻
+          </div>
+
+          <h3 class="font-semibold">
+            Desarrollo
+          </h3>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Programación y tecnología
+          </p>
+
+        </a>
+
+
+        <a href="#cursos" class="group bg-slate-900 border border-slate-800
+                          hover:border-indigo-500/50
+                          rounded-xl p-5 transition">
+
+          <div class="text-3xl mb-3">
+            📊
+          </div>
+
+          <h3 class="font-semibold">
+            Negocios
+          </h3>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Gestión y emprendimiento
+          </p>
+
+        </a>
+
+
+        <a href="#cursos" class="group bg-slate-900 border border-slate-800
+                          hover:border-indigo-500/50
+                          rounded-xl p-5 transition">
+
+          <div class="text-3xl mb-3">
+            🎨
+          </div>
+
+          <h3 class="font-semibold">
+            Diseño
+          </h3>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Creatividad y diseño
+          </p>
+
+        </a>
+
+
+        <a href="#cursos" class="group bg-slate-900 border border-slate-800
+                          hover:border-indigo-500/50
+                          rounded-xl p-5 transition">
+
+          <div class="text-3xl mb-3">
+            📚
+          </div>
+
+          <h3 class="font-semibold">
+            Educación
+          </h3>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Aprende nuevas habilidades
+          </p>
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================= -->
+  <!-- CURSOS -->
+  <!-- ========================= -->
+
+  <section id="cursos" class="max-w-7xl mx-auto px-6 py-16">
+
+    <div class="flex flex-col md:flex-row
+                    md:items-end md:justify-between
+                    gap-4 mb-8">
+
+      <div>
+
+        <p class="text-sm text-indigo-400 font-semibold uppercase">
+          Cursos
+        </p>
+
+        <h2 class="text-3xl font-bold mt-1">
+          Cursos destacados
+        </h2>
+
+        <p class="text-slate-500 mt-2">
+          Encuentra el curso que necesitas para seguir creciendo.
+        </p>
+
+      </div>
+
+      <button class="text-indigo-400 hover:text-indigo-300
+                       font-medium">
+
+        Ver todos →
+
+      </button>
+
+    </div>
+
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
+                    gap-6">
+
+      {% for course in courses %}
+
+      <article class="group bg-slate-900
+                       border border-slate-800
+                       rounded-2xl overflow-hidden
+                       hover:border-indigo-500/50
+                       hover:-translate-y-1
+                       transition duration-300">
+
+        <!-- Image -->
+
+        <div class="relative h-48 overflow-hidden">
+
+          <img src="https://picsum.photos/seed/course-{{ course.id }}/700/400" alt="{{ course.title }}" class="w-full h-full object-cover
+                               group-hover:scale-105
+                               transition duration-500">
+
+          <div class="absolute top-3 left-3">
+
+            <span class="bg-slate-950/80 backdrop-blur
+                                     text-white text-xs font-medium
+                                     px-3 py-1.5 rounded-full">
+
+              Curso
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Content -->
+
+        <div class="p-5">
+
+          <h3 class="text-lg font-bold leading-snug
+                               group-hover:text-indigo-400
+                               transition">
+
+            {{ course.title }}
+
+          </h3>
+
+
+          <p class="text-sm text-slate-500 mt-2">
+
+            Instructor:
+            <span class="text-slate-300">
+              {{ course.instructor|default:"Equipo EdTech" }}
+            </span>
+
+          </p>
+
+
+          <div class="flex items-center gap-1 mt-3">
+
+            <span class="text-yellow-400">
+              ★★★★★
+            </span>
+
+            <span class="text-sm text-slate-500">
+              Curso online
+            </span>
+
+          </div>
+
+
+          <div class="border-t border-slate-800
+                                mt-5 pt-5
+                                flex items-center justify-between">
+
+            <div>
+
+              <span class="text-xs text-slate-500 block">
+                Precio
+              </span>
+
+              <span class="text-xl font-bold text-white">
+
+                ${{ course.enrollment_cost }}
+
+              </span>
+
+            </div>
+
+
+            {% if request.user.is_authenticated %}
+
+            <form method="post" action="{% url 'carrito_agregar' course.id %}">
+
+              {% csrf_token %}
+
+              <button type="submit" class="bg-indigo-600
+                                       hover:bg-indigo-500
+                                       px-4 py-2.5
+                                       rounded-lg
+                                       font-semibold
+                                       text-sm
+                                       transition">
+
+                🛒 Agregar
+
+              </button>
+
+            </form>
+
+            {% else %}
+
+            <a href="{% url 'login' %}" class="bg-indigo-600
+                                   hover:bg-indigo-500
+                                   px-4 py-2.5
+                                   rounded-lg
+                                   font-semibold
+                                   text-sm
+                                   transition">
+
+              Ver curso
+
+            </a>
+
+            {% endif %}
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      {% empty %}
+
+      <!-- Empty state -->
+
+      <div class="col-span-full">
+
+        <div class="border border-dashed
+                            border-slate-700
+                            rounded-2xl
+                            py-16
+                            text-center">
+
+          <div class="text-5xl mb-4">
+            📚
+          </div>
+
+          <h3 class="text-xl font-bold">
+            Todavía no hay cursos
+          </h3>
+
+          <p class="text-slate-500 mt-2">
+            Los cursos aparecerán aquí cuando sean publicados.
+          </p>
+
+        </div>
+
+      </div>
+
+      {% endfor %}
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================= -->
+  <!-- BENEFICIOS -->
+  <!-- ========================= -->
+
+  <section class="bg-slate-900 border-y border-slate-800">
+
+    <div class="max-w-7xl mx-auto px-6 py-16">
+
+      <div class="text-center max-w-2xl mx-auto">
+
+        <p class="text-sm text-indigo-400 font-semibold uppercase">
+          ¿Por qué EdTech?
+        </p>
+
+        <h2 class="text-3xl font-bold mt-2">
+          Una plataforma pensada para aprender
+        </h2>
+
+        <p class="text-slate-500 mt-4">
+          Todo lo que necesitas para desarrollar nuevas habilidades
+          desde cualquier lugar.
+        </p>
+
+      </div>
+
+
+      <div class="grid md:grid-cols-3 gap-6 mt-12">
+
+        <div class="text-center p-6">
+
+          <div class="w-14 h-14 mx-auto
+                                flex items-center justify-center
+                                rounded-2xl
+                                bg-indigo-500/10
+                                text-2xl">
+
+            🎓
+
+          </div>
+
+          <h3 class="font-bold text-lg mt-5">
+            Aprende a tu ritmo
+          </h3>
+
+          <p class="text-slate-500 mt-2">
+            Accede a tus cursos y estudia cuando quieras.
+          </p>
+
+        </div>
+
+
+        <div class="text-center p-6">
+
+          <div class="w-14 h-14 mx-auto
+                                flex items-center justify-center
+                                rounded-2xl
+                                bg-indigo-500/10
+                                text-2xl">
+
+            👨‍💻
+
+          </div>
+
+          <h3 class="font-bold text-lg mt-5">
+            Contenido práctico
+          </h3>
+
+          <p class="text-slate-500 mt-2">
+            Aprende mediante contenidos pensados para aplicar
+            tus conocimientos.
+          </p>
+
+        </div>
+
+
+        <div class="text-center p-6">
+
+          <div class="w-14 h-14 mx-auto
+                                flex items-center justify-center
+                                rounded-2xl
+                                bg-indigo-500/10
+                                text-2xl">
+
+            🏆
+
+          </div>
+
+          <h3 class="font-bold text-lg mt-5">
+            Sigue creciendo
+          </h3>
+
+          <p class="text-slate-500 mt-2">
+            Construye nuevas habilidades y amplía tus conocimientos.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================= -->
+  <!-- CTA -->
+  <!-- ========================= -->
+
+  <section class="max-w-7xl mx-auto px-6 py-20">
+
+    <div class="relative overflow-hidden
+                    rounded-3xl
+                    bg-indigo-600
+                    px-8 py-14
+                    text-center">
+
+      <div class="absolute -top-20 -right-20
+                        w-64 h-64
+                        bg-white/10
+                        rounded-full blur-2xl">
+      </div>
+
+      <div class="relative">
+
+        <h2 class="text-3xl md:text-4xl
+                           font-extrabold">
+
+          Comienza a aprender hoy
+
+        </h2>
+
+        <p class="text-indigo-100
+                          max-w-xl
+                          mx-auto
+                          mt-4">
+
+          Encuentra un curso, desarrolla nuevas habilidades
+          y empieza a construir tu próximo proyecto.
+
+        </p>
+
+        <div class="mt-8">
+
+          {% if request.user.is_authenticated %}
+
+          <a href="#cursos" class="inline-block
+                               bg-white
+                               text-indigo-700
+                               hover:bg-slate-100
+                               px-7 py-3
+                               rounded-lg
+                               font-bold
+                               transition">
+
+            Explorar cursos
+
+          </a>
+
+          {% else %}
+
+          <a href="/register/" class="inline-block
+                               bg-white
+                               text-indigo-700
+                               hover:bg-slate-100
+                               px-7 py-3
+                               rounded-lg
+                               font-bold
+                               transition">
+
+            Crear mi cuenta
+
+          </a>
+
+          {% endif %}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}
