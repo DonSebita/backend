@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ accion }} | EdTech Admin
+{% endblock %}
+
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-12">
+
+    <div class="mb-8">
+
+        <p class="text-indigo-400 text-sm font-semibold uppercase">
+            Administración
+        </p>
+
+        <h1 class="text-3xl font-extrabold mt-2">
+            {{ accion }}
+        </h1>
+
+    </div>
+
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="space-y-5">
+
+                {% for field in form %}
+
+                <div>
+
+                    <label class="block text-sm font-semibold text-slate-300 mb-1.5">
+                        {{ field.label }}
+                    </label>
+
+
+                    <div class="[&>input]:w-full
+                        [&>input]:bg-slate-800
+                        [&>input]:border
+                        [&>input]:border-slate-700
+                        [&>input]:rounded-lg
+                        [&>input]:px-4
+                        [&>input]:py-2.5
+                        [&>input]:text-white
+                        [&>input]:outline-none
+                        [&>input]:focus:border-indigo-500
+
+                        [&>select]:w-full
+                        [&>select]:bg-slate-800
+                        [&>select]:border
+                        [&>select]:border-slate-700
+                        [&>select]:rounded-lg
+                        [&>select]:px-4
+                        [&>select]:py-2.5
+                        [&>select]:text-white
+
+                        [&>textarea]:w-full
+                        [&>textarea]:bg-slate-800
+                        [&>textarea]:border
+                        [&>textarea]:border-slate-700
+                        [&>textarea]:rounded-lg
+                        [&>textarea]:px-4
+                        [&>textarea]:py-2.5
+                        [&>textarea]:text-white">
+
+                        {{ field }}
+
+                    </div>
+
+
+                    {% if field.help_text %}
+
+                    <p class="mt-1 text-xs text-slate-500">
+                        {{ field.help_text }}
+                    </p>
+
+                    {% endif %}
+
+
+                    {% if field.errors %}
+
+                    <p class="mt-1 text-sm text-red-400">
+                        {{ field.errors|join:", " }}
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="flex gap-4 mt-8">
+
+                <button type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-lg font-semibold transition">
+
+                    Guardar usuario
+
+                </button>
+
+
+                <a href="{% url 'admin_usuarios' %}"
+                    class="bg-slate-800 hover:bg-slate-700 px-6 py-3 rounded-lg transition">
+
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

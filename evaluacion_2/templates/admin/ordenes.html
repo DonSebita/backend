@@ -1,63 +1,632 @@
 {% extends 'base.html' %}
-{% block title %}Órdenes | EdTech Admin{% endblock %}
+
+{% block title %}
+Órdenes | EdTech Admin
+{% endblock %}
+
 {% block content %}
 
 <section class="max-w-7xl mx-auto px-6 py-12">
 
+    <!-- ENCABEZADO -->
+
     <div class="mb-8">
-        <p class="text-indigo-400 text-sm font-semibold">ADMINISTRACIÓN</p>
-        <h1 class="text-3xl font-extrabold mt-1">Órdenes</h1>
+
+        <p class="text-indigo-400 text-sm font-semibold">
+            ADMINISTRACIÓN
+        </p>
+
+        <h1 class="text-3xl font-extrabold mt-1">
+            Órdenes
+        </h1>
+
+        <p class="text-slate-400 mt-2">
+            Revisa y gestiona las matrículas y solicitudes de cancelación.
+        </p>
+
     </div>
+
+
+    <!-- TABLA -->
 
     <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+
         <div class="overflow-x-auto">
+
             <table class="w-full text-left">
+
                 <thead class="bg-slate-950">
+
                     <tr>
-                        <th class="px-6 py-4">#</th>
-                        <th class="px-6 py-4">Estudiante</th>
-                        <th class="px-6 py-4">Cursos</th>
-                        <th class="px-6 py-4">Total</th>
-                        <th class="px-6 py-4">Estado</th>
-                        <th class="px-6 py-4">Fecha</th>
+
+                        <th class="px-6 py-4">
+                            #
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Estudiante
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Cursos
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Total
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Estado
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Fecha
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Acciones
+                        </th>
+
                     </tr>
+
                 </thead>
+
+
                 <tbody>
+
                     {% for orden in ordenes %}
-                    <tr class="border-t border-slate-800">
-                        <td class="px-6 py-4 text-slate-500">#{{ orden.id }}</td>
-                        <td class="px-6 py-4 font-medium">{{ orden.user.username }}</td>
-                        <td class="px-6 py-4 text-slate-400">
-                            {% for item in orden.items.all %}
-                            <span class="block text-sm">{{ item.course.title }}</span>
-                            {% endfor %}
+
+                    <tr class="border-t border-slate-800 hover:bg-slate-800/40">
+
+
+                        <!-- ID -->
+
+                        <td class="px-6 py-4 text-slate-500">
+
+                            #{{ orden.id }}
+
                         </td>
-                        <td class="px-6 py-4 font-bold">
-                            ${% for item in orden.items.all %}{{ item.price_at_purchase }}{% endfor %}
-                        </td>
+
+
+                        <!-- ESTUDIANTE -->
+
                         <td class="px-6 py-4">
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold
-                                {% if orden.status == 'PAGADO' %}bg-green-500/20 text-green-400
-                                {% elif orden.status == 'CANCELADO' %}bg-red-500/20 text-red-400
-                                {% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
-                                {{ orden.status }}
-                            </span>
+
+                            <p class="font-medium">
+                                {{ orden.user.username }}
+                            </p>
+
+                            {% if orden.user.get_full_name %}
+
+                            <p class="text-xs text-slate-500">
+                                {{ orden.user.get_full_name }}
+                            </p>
+
+                            {% endif %}
+
                         </td>
-                        <td class="px-6 py-4 text-slate-400 text-sm">{{ orden.created_at|date:"d/m/Y H:i" }}</td>
+
+
+                        <!-- CURSOS -->
+
+                        <td class="px-6 py-4 text-slate-400">
+
+                            {% for item in orden.items.all %}
+
+                            <span class="block text-sm">
+                                {{ item.course.title }}
+                            </span>
+
+                            {% endfor %}
+
+                        </td>
+
+
+                        <!-- TOTAL -->
+
+                        <td class="px-6 py-4 font-bold whitespace-nowrap">
+
+                            ${{ orden.total }}
+
+                        </td>
+
+
+                        <!-- ESTADO -->
+
+                        <td class="px-6 py-4">
+
+                            {% if orden.status == 'PAGADO' %}
+
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">
+                                PAGADO
+                            </span>
+
+                            {% elif orden.status == 'CANCELADO' %}
+
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">
+                                CANCELADO
+                            </span>
+
+                            {% else %}
+
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-400">
+                                PENDIENTE
+                            </span>
+
+                            {% endif %}
+
+
+                            <!-- SOLICITUD DE CANCELACIÓN -->
+
+                            {% if orden.cancellation_status == 'REQUESTED' %}
+
+                            <div class="mt-2">
+
+                                <span
+                                    class="px-2 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-300">
+                                    ⚠ Cancelación solicitada
+                                </span>
+
+                            </div>
+
+                            {% elif orden.cancellation_status == 'REJECTED' %}
+
+                            <div class="mt-2">
+
+                                <span
+                                    class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">
+                                    Cancelación rechazada
+                                </span>
+
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- FECHA -->
+
+                        <td class="px-6 py-4 text-slate-400 text-sm whitespace-nowrap">
+
+                            {{ orden.created_at|date:"d/m/Y H:i" }}
+
+                        </td>
+
+
+                        <!-- ACCIONES -->
+
+                        <td class="px-6 py-4">
+
+                            <!-- ================================= -->
+                            <!-- ORDEN PENDIENTE -->
+                            <!-- ================================= -->
+
+                            {% if orden.status == 'PENDIENTE' %}
+
+                            <div class="flex gap-2">
+
+                                <button onclick="cambiarEstadoOrden(
+                                            {{ orden.id }},
+                                            'PAGADO'
+                                        )"
+                                    class="px-3 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-sm font-semibold transition">
+                                    Confirmar
+                                </button>
+
+
+                                <button onclick="cambiarEstadoOrden(
+                                            {{ orden.id }},
+                                            'CANCELADO'
+                                        )"
+                                    class="px-3 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-semibold transition">
+                                    Cancelar
+                                </button>
+
+                            </div>
+
+
+                            <!-- ================================= -->
+                            <!-- SOLICITUD DE CANCELACIÓN -->
+                            <!-- ================================= -->
+
+                            {% elif orden.status == 'PAGADO' and orden.cancellation_status == 'REQUESTED' %}
+
+                            <div class="space-y-2">
+
+                                <button onclick="resolverCancelacion(
+                                            {{ orden.id }},
+                                            'APPROVE'
+                                        )"
+                                    class="w-full px-3 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-semibold transition">
+                                    Aprobar cancelación
+                                </button>
+
+
+                                <button onclick="resolverCancelacion(
+                                            {{ orden.id }},
+                                            'REJECT'
+                                        )"
+                                    class="w-full px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-semibold transition">
+                                    Rechazar
+                                </button>
+
+                            </div>
+
+
+                            <!-- ================================= -->
+                            <!-- ORDEN PAGADA SIN SOLICITUD -->
+                            <!-- ================================= -->
+
+                            {% elif orden.status == 'PAGADO' %}
+
+                            <span class="text-green-400 text-sm font-semibold">
+                                Matrícula confirmada
+                            </span>
+
+
+                            <!-- ================================= -->
+                            <!-- ORDEN CANCELADA -->
+                            <!-- ================================= -->
+
+                            {% elif orden.status == 'CANCELADO' %}
+
+                            <span class="text-red-400 text-sm font-semibold">
+                                Matrícula cancelada
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
                     </tr>
+
+
                     {% empty %}
+
                     <tr>
-                        <td colspan="6" class="px-6 py-10 text-center text-slate-500">No existen órdenes.</td>
+
+                        <td colspan="7" class="px-6 py-10 text-center text-slate-500">
+                            No existen órdenes.
+                        </td>
+
                     </tr>
+
                     {% endfor %}
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
 
+
+    <!-- VOLVER -->
+
     <div class="mt-6">
-        <a href="{% url 'admin_dashboard' %}" class="text-slate-400 hover:text-white text-sm">← Volver al panel</a>
+
+        <a href="{% url 'admin_dashboard' %}" class="text-slate-400 hover:text-white text-sm">
+            ← Volver al panel
+        </a>
+
     </div>
 
 </section>
+
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT -->
+<!-- ===================================================== -->
+
+<script>
+
+
+    /*
+    =====================================================
+    CAMBIAR ESTADO DE UNA ORDEN
+    PENDIENTE → PAGADO
+    PENDIENTE → CANCELADO
+    =====================================================
+    */
+
+    async function cambiarEstadoOrden(orderId, nuevoEstado) {
+
+        let mensaje = '';
+
+
+        if (nuevoEstado === 'PAGADO') {
+
+            mensaje =
+                '¿Confirmar esta matrícula?\n\n' +
+                'Al confirmar, se descontará un cupo de cada curso.';
+
+        } else {
+
+            mensaje =
+                '¿Cancelar esta matrícula?\n\n' +
+                'La orden será marcada como CANCELADA.';
+
+        }
+
+
+        if (!confirm(mensaje)) {
+
+            return;
+
+        }
+
+
+        const csrfToken = getCookie('csrftoken');
+
+
+        try {
+
+            const response = await fetch(
+
+                `/api/ordenes/${orderId}/estado/`,
+
+                {
+
+                    method: 'PATCH',
+
+                    headers: {
+
+                        'Content-Type': 'application/json',
+
+                        'X-CSRFToken': csrfToken
+
+                    },
+
+                    credentials: 'same-origin',
+
+                    body: JSON.stringify({
+
+                        status: nuevoEstado
+
+                    })
+
+                }
+
+            );
+
+
+            const data = await response.json();
+
+
+            console.log(
+                'Respuesta:',
+                response.status,
+                data
+            );
+
+
+            if (response.ok) {
+
+                alert(
+
+                    nuevoEstado === 'PAGADO'
+
+                        ? 'Matrícula confirmada correctamente.'
+
+                        : 'Matrícula cancelada correctamente.'
+
+                );
+
+
+                window.location.reload();
+
+                return;
+
+            }
+
+
+            alert(
+
+                data.error ||
+                'No se pudo actualizar la matrícula.'
+
+            );
+
+        }
+
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                'No se pudo conectar con el servidor.'
+            );
+
+        }
+
+    }
+
+
+    /*
+    =====================================================
+    APROBAR / RECHAZAR SOLICITUD DE CANCELACIÓN
+    =====================================================
+    */
+
+    async function resolverCancelacion(orderId, decision) {
+
+        let mensaje = '';
+
+
+        if (decision === 'APPROVE') {
+
+            mensaje =
+                '¿Aprobar la cancelación de esta matrícula?\n\n' +
+                'El curso recuperará el cupo utilizado por este estudiante.';
+
+        } else {
+
+            mensaje =
+                '¿Rechazar la solicitud de cancelación?\n\n' +
+                'La matrícula permanecerá PAGADA.';
+
+        }
+
+
+        if (!confirm(mensaje)) {
+
+            return;
+
+        }
+
+
+        const csrfToken = getCookie('csrftoken');
+
+
+        try {
+
+            const response = await fetch(
+
+                `/api/ordenes/${orderId}/cancelacion/`,
+
+                {
+
+                    method: 'PATCH',
+
+                    headers: {
+
+                        'Content-Type': 'application/json',
+
+                        'X-CSRFToken': csrfToken
+
+                    },
+
+                    credentials: 'same-origin',
+
+                    body: JSON.stringify({
+
+                        decision: decision
+
+                    })
+
+                }
+
+            );
+
+
+            const data = await response.json();
+
+
+            console.log(
+
+                'Respuesta cancelación:',
+                response.status,
+                data
+
+            );
+
+
+            if (response.ok) {
+
+                if (decision === 'APPROVE') {
+
+                    alert(
+                        'Cancelación aprobada. El cupo ha sido liberado.'
+                    );
+
+                } else {
+
+                    alert(
+                        'Solicitud de cancelación rechazada.'
+                    );
+
+                }
+
+
+                window.location.reload();
+
+                return;
+
+            }
+
+
+            alert(
+
+                data.error ||
+                'No se pudo procesar la solicitud.'
+
+            );
+
+        }
+
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                'No se pudo conectar con el servidor.'
+            );
+
+        }
+
+    }
+
+
+    /*
+    =====================================================
+    OBTENER COOKIE CSRF
+    =====================================================
+    */
+
+    function getCookie(name) {
+
+        let cookieValue = null;
+
+
+        if (
+            document.cookie &&
+            document.cookie !== ''
+        ) {
+
+            const cookies =
+                document.cookie.split(';');
+
+
+            for (
+                let cookie of cookies
+            ) {
+
+                cookie = cookie.trim();
+
+
+                if (
+                    cookie.substring(
+                        0,
+                        name.length + 1
+                    ) === name + '='
+                ) {
+
+                    cookieValue =
+                        decodeURIComponent(
+
+                            cookie.substring(
+                                name.length + 1
+                            )
+
+                        );
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+
+        return cookieValue;
+
+    }
+
+</script>
+
 {% endblock %}

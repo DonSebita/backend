@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Eliminar usuario | EdTech Admin
+{% endblock %}
+
+{% block content %}
+
+<section class="max-w-xl mx-auto px-6 py-16">
+
+    <div class="bg-slate-900 border border-red-900/50 rounded-2xl p-8">
+
+        <p class="text-red-400 text-sm font-semibold uppercase">
+            Administración
+        </p>
+
+        <h1 class="text-3xl font-extrabold mt-2">
+            Eliminar usuario
+        </h1>
+
+        <p class="text-slate-400 mt-4">
+            ¿Estás seguro de que deseas eliminar al usuario
+            <strong class="text-white">
+                {{ usuario.username }}
+            </strong>?
+        </p>
+
+        <p class="text-sm text-red-400 mt-3">
+            Esta acción no se puede deshacer.
+        </p>
+
+
+        <form method="POST" class="flex gap-4 mt-8">
+
+            {% csrf_token %}
+
+            <button type="submit" class="bg-red-600 hover:bg-red-500 px-6 py-3 rounded-lg font-semibold">
+
+                Sí, eliminar
+
+            </button>
+
+
+            <a href="{% url 'admin_usuarios' %}" class="bg-slate-800 hover:bg-slate-700 px-6 py-3 rounded-lg">
+
+                Cancelar
+
+            </a>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

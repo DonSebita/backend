@@ -29,6 +29,12 @@
 
             </h1>
 
+            <p class="text-slate-400 mt-3">
+                Instructor:
+                <span class="text-white">
+                    {{ course.instructor.get_full_name }}
+                </span>
+            </p>
             <p class="text-lg text-slate-400
                       mt-5 max-w-3xl">
 
@@ -125,28 +131,22 @@
                               font-extrabold
                               mt-1">
 
-                        ${{ course.price }}
+                        ${{ course.enrollment_cost }}
 
                     </p>
 
 
                     {% if request.user.is_authenticated %}
 
-                    <form method="post" action="/api/carro/add/" class="mt-6">
+                    <form id="add-to-cart-form" class="mt-6">
 
                         {% csrf_token %}
 
                         <input type="hidden" name="course_id" value="{{ course.id }}">
 
-                        <button type="submit" class="w-full
-                                   bg-indigo-600
-                                   hover:bg-indigo-500
-                                   py-3
-                                   rounded-lg
-                                   font-bold">
-
+                        <button type="submit"
+                            class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-lg font-bold">
                             🛒 Agregar al carrito
-
                         </button>
 
                     </form>
@@ -187,4 +187,118 @@
 
 </section>
 
+<!-- Popup -->
+<div id="cart-popup"
+    class="fixed top-6 right-6 z-50 hidden">
+
+    <div class="bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3">
+
+        <div id="cart-popup-icon"
+            class="text-2xl font-bold">
+            ✓
+        </div>
+
+        <div>
+            <p id="cart-popup-title"
+                class="font-bold">
+                ¡Curso agregado!
+            </p>
+
+            <p id="cart-popup-message"
+                class="text-sm">
+                El curso fue agregado correctamente al carrito.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+<script>
+document.getElementById('add-to-cart-form').addEventListener('submit', async function(event) {
+
+    event.preventDefault();
+
+    const form = this;
+    const courseId = form.querySelector('input[name="course_id"]').value;
+    const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    try {
+
+        const response = await fetch('/api/carro/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                course_id: courseId
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+            mostrarPopup(
+                'success',
+                '¡Curso agregado!',
+                'El curso fue agregado correctamente al carrito.'
+            );
+
+        } else {
+
+            mostrarPopup(
+                'error',
+                'No se pudo agregar',
+                data.error || 'Ocurrió un error al agregar el curso.'
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        mostrarPopup(
+            'error',
+            'Error',
+            'No se pudo conectar con el servidor.'
+        );
+    }
+});
+
+
+function mostrarPopup(tipo, titulo, mensaje) {
+
+    const popup = document.getElementById('cart-popup');
+    const title = document.getElementById('cart-popup-title');
+    const message = document.getElementById('cart-popup-message');
+    const icon = document.getElementById('cart-popup-icon');
+
+    popup.classList.remove('hidden');
+
+    if (tipo === 'success') {
+
+        popup.classList.remove('bg-red-600');
+        popup.classList.add('bg-green-600');
+
+        icon.textContent = '✓';
+
+    } else {
+
+        popup.classList.remove('bg-green-600');
+        popup.classList.add('bg-red-600');
+
+        icon.textContent = '!';
+    }
+
+    title.textContent = titulo;
+    message.textContent = mensaje;
+
+    setTimeout(() => {
+        popup.classList.add('hidden');
+    }, 3000);
+}
+</script>
 {% endblock %}

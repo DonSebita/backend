@@ -38,20 +38,52 @@ class CartItem(models.Model):
 # Implementa explícitamente CHOICES para el estado de la transacción,
 # cumpliendo con la exigencia de la pauta.
 # =====================================================================
+from django.db import models
+from django.conf import settings
+
+
 class Order(models.Model):
+
     class Status(models.TextChoices):
         PENDIENTE = 'PENDIENTE', 'Pendiente'
         PAGADO = 'PAGADO', 'Pagado'
         CANCELADO = 'CANCELADO', 'Cancelado'
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='orders', on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDIENTE)
+    class CancellationStatus(models.TextChoices):
+        NONE = 'NONE', 'Sin solicitud'
+        REQUESTED = 'REQUESTED', 'Solicitud pendiente'
+        REJECTED = 'REJECTED', 'Solicitud rechazada'
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='orders',
+        on_delete=models.CASCADE
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDIENTE
+    )
+
+    cancellation_status = models.CharField(
+        max_length=20,
+        choices=CancellationStatus.choices,
+        default=CancellationStatus.NONE
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
+
     updated_at = models.DateTimeField(auto_now=True)
+
+    def total(self):
+        return sum(
+            item.price_at_purchase
+            for item in self.items.all()
+        )
 
     def __str__(self):
         return f"Orden #{self.id} - {self.user.username} ({self.status})"
-
 # =====================================================================
 # Modelo de Ítem de la Orden (OrderItem)
 # Congela el precio del curso al momento de la compra (price_at_purchase)

@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth import get_user_model
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django import forms
@@ -8,6 +7,8 @@ from django import forms
 from courses.models import Course, Area
 from enrollments.models import Order, Cart, CartItem
 from users.models import User
+from users.forms import UsuarioForm
+from enrollments.models import Order
 
 # ─── Contexto compartido del footer ──────────────────────────────────────────
 FOOTER = {
@@ -85,13 +86,206 @@ class InstructorForm(forms.ModelForm):
 # ─── PÚBLICAS ─────────────────────────────────────────────────────────────────
 
 def index(request):
-    """Página de inicio: muestra el catálogo de cursos (público)."""
-    courses = Course.objects.all().select_related('area')
+    """Página de inicio: muestra únicamente el catálogo de categorías (áreas)."""
+    areas = Area.objects.all()
+    
     return render(request, 'index.html', {
-        'courses': courses,
-        **FOOTER,
+        'areas': areas,
+        # **FOOTER, (si aún usas este diccionario global)
     })
 
+def lista_cursos(request):
+
+    courses = Course.objects.all()
+    areas = Area.objects.all().order_by('name')
+
+    # BUSCAR
+    buscar = request.GET.get('buscar', '').strip()
+
+    if buscar:
+        courses = courses.filter(
+            title__icontains=buscar
+        )
+
+    # FILTRAR POR ÁREA
+    area = request.GET.get('area', '')
+
+    if area:
+        courses = courses.filter(
+            area_id=area
+        )
+
+    # ORDENAR
+    orden = request.GET.get('orden', '')
+
+    if orden == 'precio_menor':
+        courses = courses.order_by('enrollment_cost')
+
+    elif orden == 'precio_mayor':
+        courses = courses.order_by('-enrollment_cost')
+
+    elif orden == 'recientes':
+        courses = courses.order_by('-id')
+
+    else:
+        courses = courses.order_by('-id')
+
+    return render(
+        request,
+        'cursos/lista.html',
+        {
+            'courses': courses,
+            'areas': areas,
+            'buscar': buscar,
+        }
+    )
+
+    courses = Course.objects.all()
+    areas = Area.objects.all().order_by('name')
+
+    # Buscar
+    buscar = request.GET.get('buscar', '').strip()
+
+    if buscar:
+        courses = courses.filter(
+            title__icontains=buscar
+        )
+
+    # Área
+    area = request.GET.get('area', '')
+
+    if area:
+        courses = courses.filter(
+            area_id=area
+        )
+
+    area_seleccionada = int(area) if area.isdigit() else None
+
+    # Orden
+    orden = request.GET.get('orden', '')
+
+    if orden == 'precio_menor':
+        courses = courses.order_by('enrollment_cost')
+
+    elif orden == 'precio_mayor':
+        courses = courses.order_by('-enrollment_cost')
+
+    elif orden == 'recientes':
+        courses = courses.order_by('-id')
+
+    else:
+        courses = courses.order_by('-id')
+
+    return render(
+        request,
+        'cursos/lista.html',
+        {
+            'courses': courses,
+            'areas': areas,
+            'area_seleccionada': area_seleccionada,
+            'buscar': buscar,
+            'orden_seleccionado': orden,
+        }
+    )
+
+    courses = Course.objects.all()
+    areas = Area.objects.all().order_by('name')
+
+    # Buscar
+    buscar = request.GET.get('buscar', '').strip()
+
+    if buscar:
+        courses = courses.filter(
+            title__icontains=buscar
+        )
+
+    # Área
+    area = request.GET.get('area', '')
+
+    if area:
+        courses = courses.filter(
+            area_id=area
+        )
+
+    # Orden
+    orden = request.GET.get('orden', '')
+
+    if orden == 'precio_menor':
+        courses = courses.order_by('enrollment_cost')
+
+    elif orden == 'precio_mayor':
+        courses = courses.order_by('-enrollment_cost')
+
+    elif orden == 'recientes':
+        courses = courses.order_by('-id')
+
+    else:
+        courses = courses.order_by('-id')
+
+    return render(
+        request,
+        'cursos/lista.html',
+        {
+            'courses': courses,
+            'areas': areas,
+            'area_seleccionada': area,
+            'buscar': buscar,
+            'orden_seleccionado': orden,
+        }
+    )
+
+    courses = Course.objects.all()
+    areas = Area.objects.all().order_by('name')
+
+    # -------------------------
+    # BUSCAR
+    # -------------------------
+
+    buscar = request.GET.get('buscar', '').strip()
+
+    if buscar:
+        courses = courses.filter(
+            title__icontains=buscar
+        )
+
+
+    # -------------------------
+    # FILTRAR POR ÁREA
+    # -------------------------
+
+    area = request.GET.get('area', '')
+
+    if area:
+        courses = courses.filter(area_id=area)
+
+    area_seleccionada = int(area) if area.isdigit() else None
+
+
+    # -------------------------
+    # ORDENAR
+    # -------------------------
+
+    orden = request.GET.get('orden', '')
+
+    if orden == 'precio_menor':
+        courses = courses.order_by('enrollment_cost')
+
+    elif orden == 'precio_mayor':
+        courses = courses.order_by('-enrollment_cost')
+
+    else:
+        # Últimos cursos agregados
+        courses = courses.order_by('-id')
+
+
+    return render(
+        request,
+        'cursos/lista.html',
+        {
+            'courses': courses,
+            'areas': areas,
+        }
+    )
 
 def login_view(request):
     """Inicio de sesión. Redirige al panel correspondiente según el rol."""
@@ -497,3 +691,152 @@ def admin_instructor_eliminar(request, pk):
         'instructor': instructor,
         **FOOTER
     })
+
+@login_required
+def checkout_html(request):
+
+    cart = Cart.objects.filter(
+        user=request.user
+    ).prefetch_related(
+        'items__course'
+    ).first()
+
+    if not cart or not cart.items.exists():
+        return redirect('estudiante_carrito')
+
+    total = sum(
+        item.course.enrollment_cost
+        for item in cart.items.all()
+    )
+
+    context = {
+        'cart': cart,
+        'total': total,
+    }
+
+    return render(
+        request,
+        'estudiante/checkout.html',
+        context
+    )
+
+@login_required
+def admin_usuarios(request):
+
+    usuarios = User.objects.all().order_by('-date_joined')
+
+    return render(
+        request,
+        'admin/usuarios.html',
+        {
+            'usuarios': usuarios
+        }
+    )
+
+@login_required
+def admin_usuario_nuevo(request):
+
+    if not request.user.is_superuser:
+        return redirect('admin_dashboard')
+
+    if request.method == 'POST':
+
+        form = UsuarioForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('admin_usuarios')
+
+    else:
+
+        form = UsuarioForm()
+
+    return render(
+        request,
+        'admin/usuario_form.html',
+        {
+            'form': form,
+            'accion': 'Nuevo usuario'
+        }
+    )
+
+@login_required
+def admin_usuario_editar(request, pk):
+
+    if not request.user.is_superuser:
+        return redirect('admin_dashboard')
+
+    usuario = get_object_or_404(User, pk=pk)
+
+    if request.method == 'POST':
+
+        form = UsuarioForm(
+            request.POST,
+            instance=usuario
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('admin_usuarios')
+
+    else:
+
+        form = UsuarioForm(
+            instance=usuario
+        )
+
+    return render(
+        request,
+        'admin/usuario_form.html',
+        {
+            'form': form,
+            'accion': 'Editar usuario',
+            'usuario': usuario
+        }
+    )
+
+@login_required
+def admin_usuario_eliminar(request, pk):
+
+    if not request.user.is_superuser:
+        return redirect('admin_dashboard')
+
+    usuario = get_object_or_404(User, pk=pk)
+
+    if usuario == request.user:
+        return redirect('admin_usuarios')
+
+    if request.method == 'POST':
+
+        usuario.delete()
+
+        return redirect('admin_usuarios')
+
+    return render(
+        request,
+        'admin/usuarios_eliminar.html',
+        {
+            'usuario': usuario
+        }
+    )
+
+@login_required
+def estudiante_mis_cursos(request):
+
+    ordenes = Order.objects.filter(
+        user=request.user
+    ).prefetch_related(
+        'items__course'
+    ).order_by('-created_at')
+
+    return render(
+        request,
+        'estudiante/mis_cursos.html',
+        {
+            'ordenes': ordenes
+        }
+    )

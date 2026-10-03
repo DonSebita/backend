@@ -8,6 +8,8 @@ Cursos | EdTech
 
 <section class="max-w-7xl mx-auto px-6 py-12">
 
+    <!-- ENCABEZADO -->
+
     <div class="mb-10">
 
         <p class="text-indigo-400 font-semibold text-sm uppercase">
@@ -25,40 +27,73 @@ Cursos | EdTech
     </div>
 
 
-    <!-- Filtros -->
+    <!-- FILTROS -->
 
-    <div class="grid md:grid-cols-4 gap-4 mb-10">
+    <form method="GET" class="grid md:grid-cols-4 gap-4 mb-10">
 
-        <input type="text" placeholder="Buscar cursos..." class="md:col-span-2
+        <!-- BUSCAR -->
+
+        <input type="text" name="buscar" value="{{ buscar }}" placeholder="Buscar cursos..." class="md:col-span-2
                    bg-slate-900
                    border border-slate-800
                    rounded-lg px-4 py-3
                    outline-none
                    focus:border-indigo-500">
 
-        <select class="bg-slate-900
-                   border border-slate-800
-                   rounded-lg px-4 py-3">
 
-            <option>Todas las áreas</option>
+        <!-- ÁREA -->
+
+        <select name="area" onchange="this.form.submit()" class="bg-slate-900
+                   border border-slate-800
+                   rounded-lg px-4 py-3
+                   outline-none
+                   focus:border-indigo-500">
+
+            <option value="">
+                Todas las áreas
+            </option>
+
+            {% for area in areas %}
+
+            <option value="{{ area.id }}">
+                {{ area.name }}
+            </option>
+
+            {% endfor %}
 
         </select>
 
-        <select class="bg-slate-900
-                   border border-slate-800
-                   rounded-lg px-4 py-3">
 
-            <option>Ordenar por</option>
-            <option>Precio menor</option>
-            <option>Precio mayor</option>
-            <option>Más recientes</option>
+        <!-- ORDENAR -->
+
+        <select name="orden" onchange="this.form.submit()" class="bg-slate-900
+                   border border-slate-800
+                   rounded-lg px-4 py-3
+                   outline-none
+                   focus:border-indigo-500">
+
+            <option value="">
+                Ordenar por
+            </option>
+
+            <option value="precio_menor">
+                Precio menor
+            </option>
+
+            <option value="precio_mayor">
+                Precio mayor
+            </option>
+
+            <option value="recientes">
+                Más recientes
+            </option>
 
         </select>
 
-    </div>
+    </form>
 
 
-    <!-- Cursos -->
+    <!-- CURSOS -->
 
     <div class="grid sm:grid-cols-2
                 lg:grid-cols-3
@@ -68,39 +103,71 @@ Cursos | EdTech
         {% for course in courses %}
 
         <article class="bg-slate-900
-                        border border-slate-800
-                        rounded-xl overflow-hidden
-                        hover:border-indigo-500/50
-                        transition">
+                   border border-slate-800
+                   rounded-xl
+                   overflow-hidden
+                   hover:border-indigo-500/50
+                   hover:-translate-y-1
+                   transition-all duration-200">
 
-            <img src="https://picsum.photos/seed/course-{{ course.id }}/600/350" class="w-full h-44 object-cover">
+            <!-- IMAGEN -->
+
+            <img src="https://picsum.photos/seed/course-{{ course.id }}/600/350" class="w-full h-44 object-cover"
+                alt="{{ course.title }}">
+
 
             <div class="p-5">
 
-                <h2 class="font-bold">
+                <!-- ÁREA -->
+
+                {% if course.area %}
+
+                <p class="text-xs
+                          text-indigo-400
+                          font-semibold
+                          uppercase">
+
+                    {{ course.area.name }}
+
+                </p>
+
+                {% endif %}
+
+
+                <!-- TÍTULO -->
+
+                <h2 class="font-bold text-lg mt-2">
                     {{ course.title }}
                 </h2>
+
+
+                <!-- INSTRUCTOR -->
 
                 <p class="text-sm text-slate-500 mt-2">
                     {{ course.instructor|default:"Equipo EdTech" }}
                 </p>
 
+
+                <!-- PRECIO -->
+
                 <div class="flex justify-between
                             items-center mt-5">
 
-                    <span class="text-xl font-bold">
-                        ${{ course.price }}
+                    <span class="text-xl font-bold text-white">
+
+                        ${{ course.enrollment_cost|floatformat:0 }}
+
                     </span>
 
-                    <a href="/cursos/{{ course.id }}/" class="bg-indigo-600
+
+                    <a href="{% url 'detalle_curso' course.id %}" class="bg-indigo-600
                                hover:bg-indigo-500
                                px-4 py-2
                                rounded-lg
                                text-sm
-                               font-semibold">
-
+                               font-semibold
+                               transition">
                         Ver curso
-
                     </a>
 
                 </div>
@@ -109,11 +176,16 @@ Cursos | EdTech
 
         </article>
 
+
         {% empty %}
 
-        <p class="text-slate-500">
-            No hay cursos disponibles.
-        </p>
+        <div class="col-span-full text-center py-16">
+
+            <p class="text-slate-500">
+                No hay cursos disponibles.
+            </p>
+
+        </div>
 
         {% endfor %}
 

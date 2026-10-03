@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Mis cursos | EdTech
+{% endblock %}
+
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+
+    <!-- ENCABEZADO -->
+
+    <div class="mb-10">
+
+        <p class="text-indigo-400 text-sm font-semibold uppercase">
+            MI CUENTA
+        </p>
+
+        <h1 class="text-4xl font-extrabold mt-2">
+            Mis cursos
+        </h1>
+
+        <p class="text-slate-500 mt-2">
+            Consulta el estado de tus matrículas.
+        </p>
+
+    </div>
+
+
+    {% if ordenes %}
+
+    <div class="space-y-6">
+
+        {% for orden in ordenes %}
+
+        {% for item in orden.items.all %}
+
+        <article class="bg-slate-900
+                               border border-slate-800
+                               rounded-2xl
+                               overflow-hidden">
+
+            <div class="p-6">
+
+                <!-- CABECERA -->
+
+                <div class="flex flex-col md:flex-row
+                                        md:items-start
+                                        md:justify-between
+                                        gap-4">
+
+                    <div>
+
+                        <p class="text-xs
+                                              text-indigo-400
+                                              font-semibold
+                                              uppercase">
+
+                            Matrícula #{{ orden.id }}
+
+                        </p>
+
+                        <h2 class="text-2xl
+                                               font-bold
+                                               mt-2">
+
+                            {{ item.course.title }}
+
+                        </h2>
+
+                        <p class="text-slate-500 text-sm mt-2">
+
+                            Matrícula realizada el
+                            {{ orden.created_at|date:"d/m/Y" }}
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div>
+
+                        {% if orden.status == 'PAGADO' %}
+
+                        {% if orden.cancellation_status == 'REQUESTED' %}
+
+                        <span class="px-3 py-2
+                                                       rounded-full
+                                                       text-xs
+                                                       font-semibold
+                                                       bg-yellow-500/20
+                                                       text-yellow-300">
+                            Cancelación solicitada
+                        </span>
+
+                        {% elif orden.cancellation_status == 'REJECTED' %}
+
+                        <span class="px-3 py-2
+                                                       rounded-full
+                                                       text-xs
+                                                       font-semibold
+                                                       bg-orange-500/20
+                                                       text-orange-300">
+                            Cancelación rechazada
+                        </span>
+
+                        {% else %}
+
+                        <span class="px-3 py-2
+                                                       rounded-full
+                                                       text-xs
+                                                       font-semibold
+                                                       bg-green-500/20
+                                                       text-green-300">
+                            PAGADO
+                        </span>
+
+                        {% endif %}
+
+                        {% elif orden.status == 'PENDIENTE' %}
+
+                        <span class="px-3 py-2
+                                                   rounded-full
+                                                   text-xs
+                                                   font-semibold
+                                                   bg-yellow-500/20
+                                                   text-yellow-300">
+                            PENDIENTE
+                        </span>
+
+                        {% elif orden.status == 'CANCELADO' %}
+
+                        <span class="px-3 py-2
+                                                   rounded-full
+                                                   text-xs
+                                                   font-semibold
+                                                   bg-red-500/20
+                                                   text-red-300">
+                            CANCELADO
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- INFORMACIÓN DEL CURSO -->
+
+                <div class="grid md:grid-cols-3
+                                       gap-4
+                                       mt-6
+                                       pt-6
+                                       border-t
+                                       border-slate-800">
+
+                    <div>
+
+                        <p class="text-xs
+                                              text-slate-500">
+                            Inicio
+                        </p>
+
+                        <p class="mt-1 font-semibold">
+                            {{ item.course.start_date|date:"d/m/Y" }}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs
+                                              text-slate-500">
+                            Término
+                        </p>
+
+                        <p class="mt-1 font-semibold">
+                            {{ item.course.end_date|date:"d/m/Y" }}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs
+                                              text-slate-500">
+                            Precio
+                        </p>
+
+                        <p class="mt-1 font-semibold">
+                            ${{ item.price_at_purchase }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACCIONES -->
+
+                <div class="mt-6">
+
+                    {% if orden.status == 'PAGADO' %}
+
+                    {% if orden.cancellation_status == 'REQUESTED' %}
+
+                    <p class="text-yellow-400 text-sm">
+                        Tu solicitud está siendo revisada
+                        por soporte.
+                    </p>
+
+                    {% elif orden.cancellation_status == 'REJECTED' %}
+
+                    <div>
+
+                        <p class="text-orange-400 text-sm mb-3">
+                            Tu solicitud anterior fue rechazada.
+                        </p>
+
+                        <button onclick="solicitarCancelacion({{ orden.id }})" class="px-4 py-2
+                                                       bg-red-600/20
+                                                       hover:bg-red-600/30
+                                                       text-red-400
+                                                       rounded-lg
+                                                       text-sm
+                                                       font-semibold">
+                            Solicitar cancelación nuevamente
+                        </button>
+
+                    </div>
+
+                    {% else %}
+
+                    <button onclick="solicitarCancelacion({{ orden.id }})" class="px-4 py-2
+                                                   bg-slate-800
+                                                   hover:bg-red-600/20
+                                                   hover:text-red-400
+                                                   rounded-lg
+                                                   text-sm
+                                                   font-semibold
+                                                   transition">
+                        Solicitar cancelación
+                    </button>
+
+                    {% endif %}
+
+
+                    {% elif orden.status == 'PENDIENTE' %}
+
+                    <p class="text-yellow-400 text-sm">
+                        Tu matrícula está esperando
+                        confirmación del coordinador.
+                    </p>
+
+
+                    {% elif orden.status == 'CANCELADO' %}
+
+                    <p class="text-red-400 text-sm">
+                        Esta matrícula fue cancelada.
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+        {% endfor %}
+
+    </div>
+
+
+    {% else %}
+
+    <div class="border border-dashed
+                   border-slate-700
+                   rounded-xl
+                   p-12
+                   text-center">
+
+        <p class="text-slate-500">
+            Todavía no tienes matrículas.
+        </p>
+
+        <a href="{% url 'lista_cursos' %}" class="inline-block
+                       mt-4
+                       text-indigo-400
+                       hover:text-indigo-300">
+            Explorar cursos →
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<script>
+
+    function solicitarCancelacion(orderId) {
+
+        const confirmar = confirm(
+            "¿Estás seguro de que quieres solicitar la cancelación de esta matrícula?"
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+
+        fetch(
+            `/api/ordenes/${orderId}/solicitar-cancelacion/`,
+            {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+
+                credentials: 'same-origin'
+            }
+        )
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                if (data.error) {
+
+                    alert(data.error);
+
+                    return;
+                }
+
+                alert(data.message);
+
+                location.reload();
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                alert(
+                    "Ocurrió un error al enviar la solicitud."
+                );
+
+            });
+
+    }
+
+</script>
+
+{% endblock %}

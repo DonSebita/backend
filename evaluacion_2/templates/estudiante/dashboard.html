@@ -27,10 +27,15 @@ Mi aprendizaje | EdTech
 
     <div class="grid md:grid-cols-3 gap-6 mb-10">
 
-        <div class="bg-slate-900
-                    border border-slate-800
-                    rounded-xl p-6">
-
+        <a href="{% url 'estudiante_mis_cursos' %}" class="block bg-slate-900
+                border border-slate-800
+                rounded-xl p-6
+                transition-all duration-200
+                hover:border-indigo-500
+                hover:bg-slate-800
+                hover:-translate-y-1
+                hover:shadow-lg
+                cursor-pointer">
             <p class="text-slate-500 text-sm">
                 Mis cursos
             </p>
@@ -39,7 +44,10 @@ Mi aprendizaje | EdTech
                 {{ courses|length }}
             </p>
 
-        </div>
+            <p class="text-xs text-indigo-400 mt-3">
+                Ver mis cursos →
+            </p>
+        </a>
 
 
         <div class="bg-slate-900
@@ -81,7 +89,7 @@ Mi aprendizaje | EdTech
             Mis cursos
         </h2>
 
-        <a href="{% url 'index' %}" class="text-indigo-400">
+        <a href="{% url 'lista_cursos' %}" class="text-indigo-400">
 
             Explorar cursos →
 
@@ -133,15 +141,13 @@ Mi aprendizaje | EdTech
 
                 </div>
 
-                <button class="w-full mt-5
-                           bg-indigo-600
-                           hover:bg-indigo-500
-                           py-2 rounded-lg
-                           font-semibold">
-
+                <a href="{% url 'detalle_curso' course.id %}" class="block w-full mt-5
+                        bg-indigo-600
+                        hover:bg-indigo-500
+                        py-2 rounded-lg
+                        font-semibold text-center transition">
                     Continuar curso
-
-                </button>
+                </a>
 
             </div>
 
@@ -160,11 +166,8 @@ Mi aprendizaje | EdTech
                 Todavía no tienes cursos.
             </p>
 
-            <a href="/cursos/" class="inline-block
-                      mt-4 text-indigo-400">
-
+            <a href="{% url 'lista_cursos' %}" class="text-indigo-400 hover:text-indigo-300">
                 Explorar cursos →
-
             </a>
 
         </div>
