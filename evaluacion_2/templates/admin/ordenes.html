@@ -8,6 +8,7 @@
 
 <section class="max-w-7xl mx-auto px-6 py-12">
 
+    ```
     <!-- ENCABEZADO -->
 
     <div class="mb-8">
@@ -40,7 +41,7 @@
                     <tr>
 
                         <th class="px-6 py-4">
-                            #
+                            Orden
                         </th>
 
                         <th class="px-6 py-4">
@@ -48,15 +49,19 @@
                         </th>
 
                         <th class="px-6 py-4">
-                            Cursos
+                            Curso
                         </th>
 
                         <th class="px-6 py-4">
-                            Total
+                            Precio
                         </th>
 
                         <th class="px-6 py-4">
                             Estado
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Cancelación
                         </th>
 
                         <th class="px-6 py-4">
@@ -76,15 +81,14 @@
 
                     {% for orden in ordenes %}
 
+                    {% for item in orden.items.all %}
+
                     <tr class="border-t border-slate-800 hover:bg-slate-800/40">
 
-
-                        <!-- ID -->
+                        <!-- ORDEN -->
 
                         <td class="px-6 py-4 text-slate-500">
-
                             #{{ orden.id }}
-
                         </td>
 
 
@@ -107,78 +111,113 @@
                         </td>
 
 
-                        <!-- CURSOS -->
+                        <!-- CURSO -->
 
-                        <td class="px-6 py-4 text-slate-400">
+                        <td class="px-6 py-4">
 
-                            {% for item in orden.items.all %}
-
-                            <span class="block text-sm">
+                            <p class="font-medium text-white">
                                 {{ item.course.title }}
-                            </span>
-
-                            {% endfor %}
+                            </p>
 
                         </td>
 
 
-                        <!-- TOTAL -->
+                        <!-- PRECIO -->
 
-                        <td class="px-6 py-4 font-bold whitespace-nowrap">
+                        <td class="px-6 py-4 font-semibold whitespace-nowrap">
 
-                            ${{ orden.total }}
+                            ${{ item.price_at_purchase }}
 
                         </td>
 
 
-                        <!-- ESTADO -->
+                        <!-- ESTADO DE ORDEN -->
 
                         <td class="px-6 py-4">
 
                             {% if orden.status == 'PAGADO' %}
 
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">
+                            <span class="px-2 py-1
+                                       rounded-full
+                                       text-xs
+                                       font-semibold
+                                       bg-green-500/20
+                                       text-green-400">
                                 PAGADO
                             </span>
 
                             {% elif orden.status == 'CANCELADO' %}
 
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">
+                            <span class="px-2 py-1
+                                       rounded-full
+                                       text-xs
+                                       font-semibold
+                                       bg-red-500/20
+                                       text-red-400">
                                 CANCELADO
                             </span>
 
                             {% else %}
 
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-400">
+                            <span class="px-2 py-1
+                                       rounded-full
+                                       text-xs
+                                       font-semibold
+                                       bg-yellow-500/20
+                                       text-yellow-400">
                                 PENDIENTE
                             </span>
 
                             {% endif %}
 
+                        </td>
 
-                            <!-- SOLICITUD DE CANCELACIÓN -->
 
-                            {% if orden.cancellation_status == 'REQUESTED' %}
+                        <!-- CANCELACIÓN INDIVIDUAL -->
 
-                            <div class="mt-2">
+                        <td class="px-6 py-4">
 
-                                <span
-                                    class="px-2 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-300">
-                                    ⚠ Cancelación solicitada
-                                </span>
+                            {% if item.cancellation_status == 'REQUESTED' %}
 
-                            </div>
+                            <span class="px-2 py-1
+                                       rounded-full
+                                       text-xs
+                                       font-semibold
+                                       bg-orange-500/20
+                                       text-orange-300">
+                                ⚠ Solicitud pendiente
+                            </span>
 
-                            {% elif orden.cancellation_status == 'REJECTED' %}
 
-                            <div class="mt-2">
+                            {% elif item.cancellation_status == 'APPROVED' %}
 
-                                <span
-                                    class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">
-                                    Cancelación rechazada
-                                </span>
+                            <span class="px-2 py-1
+                                       rounded-full
+                                       text-xs
+                                       font-semibold
+                                       bg-red-500/20
+                                       text-red-400">
+                                Curso cancelado
+                            </span>
 
-                            </div>
+
+                            {% elif item.cancellation_status == 'REJECTED' %}
+
+                            <span class="px-2 py-1
+                                       rounded-full
+                                       text-xs
+                                       font-semibold
+                                       bg-slate-500/20
+                                       text-slate-400">
+                                Solicitud rechazada
+                            </span>
+
+
+                            {% else %}
+
+                            <span class="text-slate-500 text-sm">
+                                —
+                            </span>
 
                             {% endif %}
 
@@ -198,81 +237,90 @@
 
                         <td class="px-6 py-4">
 
-                            <!-- ================================= -->
-                            <!-- ORDEN PENDIENTE -->
-                            <!-- ================================= -->
-
-                            {% if orden.status == 'PENDIENTE' %}
+                            {% if item.cancellation_status == 'REQUESTED' %}
 
                             <div class="flex gap-2">
 
-                                <button onclick="cambiarEstadoOrden(
-                                            {{ orden.id }},
-                                            'PAGADO'
-                                        )"
-                                    class="px-3 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-sm font-semibold transition">
-                                    Confirmar
-                                </button>
-
-
-                                <button onclick="cambiarEstadoOrden(
-                                            {{ orden.id }},
-                                            'CANCELADO'
-                                        )"
-                                    class="px-3 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-semibold transition">
-                                    Cancelar
-                                </button>
-
-                            </div>
-
-
-                            <!-- ================================= -->
-                            <!-- SOLICITUD DE CANCELACIÓN -->
-                            <!-- ================================= -->
-
-                            {% elif orden.status == 'PAGADO' and orden.cancellation_status == 'REQUESTED' %}
-
-                            <div class="space-y-2">
-
                                 <button onclick="resolverCancelacion(
-                                            {{ orden.id }},
-                                            'APPROVE'
-                                        )"
-                                    class="w-full px-3 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-semibold transition">
-                                    Aprobar cancelación
+                                        {{ item.id }},
+                                        'APPROVE'
+                                    )" class="px-3 py-2
+                                           bg-red-600
+                                           hover:bg-red-500
+                                           rounded-lg
+                                           text-xs
+                                           font-semibold
+                                           transition">
+                                    Aprobar
                                 </button>
 
 
                                 <button onclick="resolverCancelacion(
-                                            {{ orden.id }},
-                                            'REJECT'
-                                        )"
-                                    class="w-full px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-semibold transition">
+                                        {{ item.id }},
+                                        'REJECT'
+                                    )" class="px-3 py-2
+                                           bg-slate-700
+                                           hover:bg-slate-600
+                                           rounded-lg
+                                           text-xs
+                                           font-semibold
+                                           transition">
                                     Rechazar
                                 </button>
 
                             </div>
 
 
-                            <!-- ================================= -->
-                            <!-- ORDEN PAGADA SIN SOLICITUD -->
-                            <!-- ================================= -->
+                            {% elif orden.status == 'PENDIENTE' %}
 
-                            {% elif orden.status == 'PAGADO' %}
+                            <div class="flex gap-2">
 
-                            <span class="text-green-400 text-sm font-semibold">
-                                Matrícula confirmada
+                                <button onclick="cambiarEstadoOrden(
+                                        {{ orden.id }},
+                                        'PAGADO'
+                                    )" class="px-3 py-2
+                                           bg-green-600
+                                           hover:bg-green-500
+                                           rounded-lg
+                                           text-xs
+                                           font-semibold">
+                                    Confirmar
+                                </button>
+
+
+                                <button onclick="cambiarEstadoOrden(
+                                        {{ orden.id }},
+                                        'CANCELADO'
+                                    )" class="px-3 py-2
+                                           bg-red-600
+                                           hover:bg-red-500
+                                           rounded-lg
+                                           text-xs
+                                           font-semibold">
+                                    Cancelar
+                                </button>
+
+                            </div>
+
+
+                            {% elif item.cancellation_status == 'APPROVED' %}
+
+                            <span class="text-red-400 text-sm">
+                                Cancelado
                             </span>
 
 
-                            <!-- ================================= -->
-                            <!-- ORDEN CANCELADA -->
-                            <!-- ================================= -->
+                            {% elif item.cancellation_status == 'REJECTED' %}
 
-                            {% elif orden.status == 'CANCELADO' %}
+                            <span class="text-slate-500 text-sm">
+                                Sin acciones
+                            </span>
 
-                            <span class="text-red-400 text-sm font-semibold">
-                                Matrícula cancelada
+
+                            {% else %}
+
+                            <span class="text-green-400 text-sm">
+                                —
                             </span>
 
                             {% endif %}
@@ -281,12 +329,15 @@
 
                     </tr>
 
+                    {% endfor %}
 
                     {% empty %}
 
                     <tr>
 
-                        <td colspan="7" class="px-6 py-10 text-center text-slate-500">
+                        <td colspan="8" class="px-6 py-10
+                               text-center
+                               text-slate-500">
                             No existen órdenes.
                         </td>
 
@@ -302,9 +353,6 @@
 
     </div>
 
-
-    <!-- VOLVER -->
-
     <div class="mt-6">
 
         <a href="{% url 'admin_dashboard' %}" class="text-slate-400 hover:text-white text-sm">
@@ -312,16 +360,11 @@
         </a>
 
     </div>
+    ```
 
 </section>
 
-
-<!-- ===================================================== -->
-<!-- JAVASCRIPT -->
-<!-- ===================================================== -->
-
 <script>
-
 
     /*
     =====================================================
@@ -334,7 +377,6 @@
     async function cambiarEstadoOrden(orderId, nuevoEstado) {
 
         let mensaje = '';
-
 
         if (nuevoEstado === 'PAGADO') {
 
@@ -352,9 +394,7 @@
 
 
         if (!confirm(mensaje)) {
-
             return;
-
         }
 
 
@@ -364,31 +404,21 @@
         try {
 
             const response = await fetch(
-
                 `/api/ordenes/${orderId}/estado/`,
-
                 {
-
                     method: 'PATCH',
 
                     headers: {
-
                         'Content-Type': 'application/json',
-
                         'X-CSRFToken': csrfToken
-
                     },
 
                     credentials: 'same-origin',
 
                     body: JSON.stringify({
-
                         status: nuevoEstado
-
                     })
-
                 }
-
             );
 
 
@@ -405,34 +435,23 @@
             if (response.ok) {
 
                 alert(
-
                     nuevoEstado === 'PAGADO'
-
                         ? 'Matrícula confirmada correctamente.'
-
                         : 'Matrícula cancelada correctamente.'
-
                 );
-
 
                 window.location.reload();
 
                 return;
-
             }
 
 
             alert(
-
                 data.error ||
                 'No se pudo actualizar la matrícula.'
-
             );
 
-        }
-
-
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -447,11 +466,11 @@
 
     /*
     =====================================================
-    APROBAR / RECHAZAR SOLICITUD DE CANCELACIÓN
+    APROBAR / RECHAZAR CANCELACIÓN DE UN CURSO
     =====================================================
     */
 
-    async function resolverCancelacion(orderId, decision) {
+    async function resolverCancelacion(itemId, decision) {
 
         let mensaje = '';
 
@@ -459,22 +478,20 @@
         if (decision === 'APPROVE') {
 
             mensaje =
-                '¿Aprobar la cancelación de esta matrícula?\n\n' +
+                '¿Aprobar la cancelación de este curso?\n\n' +
                 'El curso recuperará el cupo utilizado por este estudiante.';
 
         } else {
 
             mensaje =
                 '¿Rechazar la solicitud de cancelación?\n\n' +
-                'La matrícula permanecerá PAGADA.';
+                'Este curso permanecerá PAGADO.';
 
         }
 
 
         if (!confirm(mensaje)) {
-
             return;
-
         }
 
 
@@ -484,31 +501,21 @@
         try {
 
             const response = await fetch(
-
-                `/api/ordenes/${orderId}/cancelacion/`,
-
+                `/api/ordenes/items/${itemId}/cancelacion/`,
                 {
-
                     method: 'PATCH',
 
                     headers: {
-
                         'Content-Type': 'application/json',
-
                         'X-CSRFToken': csrfToken
-
                     },
 
                     credentials: 'same-origin',
 
                     body: JSON.stringify({
-
                         decision: decision
-
                     })
-
                 }
-
             );
 
 
@@ -516,11 +523,9 @@
 
 
             console.log(
-
                 'Respuesta cancelación:',
                 response.status,
                 data
-
             );
 
 
@@ -544,21 +549,15 @@
                 window.location.reload();
 
                 return;
-
             }
 
 
             alert(
-
                 data.error ||
                 'No se pudo procesar la solicitud.'
-
             );
 
-        }
-
-
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -591,9 +590,7 @@
                 document.cookie.split(';');
 
 
-            for (
-                let cookie of cookies
-            ) {
+            for (let cookie of cookies) {
 
                 cookie = cookie.trim();
 
@@ -607,11 +604,9 @@
 
                     cookieValue =
                         decodeURIComponent(
-
                             cookie.substring(
                                 name.length + 1
                             )
-
                         );
 
                     break;

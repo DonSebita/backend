@@ -21,6 +21,16 @@ urlpatterns = [
     # Gestión del Coordinador
     path('ordenes/<int:pk>/estado/', OrderStatusUpdateAPIView.as_view(), name='actualizar-estado-orden'),
    
-    path('ordenes/<int:pk>/solicitar-cancelacion/', CancellationRequestAPIView.as_view(), name='solicitar-cancelacion'),
-    path('ordenes/<int:pk>/cancelacion/', CancellationDecisionAPIView.as_view(), name='decision-cancelacion'),
+    path(
+        'ordenes/items/<int:pk>/solicitar-cancelacion/',
+        CancellationRequestAPIView.as_view(),
+        name='solicitar-cancelacion'
+    ),
+
+    # Aprobar/rechazar cancelación
+    path(
+        'ordenes/items/<int:pk>/cancelacion/',
+        CancellationDecisionAPIView.as_view(),
+        name='decision-cancelacion'
+    ),
 ]

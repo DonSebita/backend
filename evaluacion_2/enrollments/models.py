@@ -49,11 +49,6 @@ class Order(models.Model):
         PAGADO = 'PAGADO', 'Pagado'
         CANCELADO = 'CANCELADO', 'Cancelado'
 
-    class CancellationStatus(models.TextChoices):
-        NONE = 'NONE', 'Sin solicitud'
-        REQUESTED = 'REQUESTED', 'Solicitud pendiente'
-        REJECTED = 'REJECTED', 'Solicitud rechazada'
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='orders',
@@ -64,12 +59,6 @@ class Order(models.Model):
         max_length=20,
         choices=Status.choices,
         default=Status.PENDIENTE
-    )
-
-    cancellation_status = models.CharField(
-        max_length=20,
-        choices=CancellationStatus.choices,
-        default=CancellationStatus.NONE
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -90,10 +79,34 @@ class Order(models.Model):
 # para evitar que cambios futuros en el catálogo afecten el histórico.
 # =====================================================================
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
-    # Usamos PROTECT para no eliminar un curso si ya tiene órdenes asociadas
-    course = models.ForeignKey(Course, on_delete=models.PROTECT)
-    price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class CancellationStatus(models.TextChoices):
+        NONE = 'NONE', 'Sin solicitud'
+        REQUESTED = 'REQUESTED', 'Solicitud pendiente'
+        REJECTED = 'REJECTED', 'Solicitud rechazada'
+        APPROVED = 'APPROVED', 'Cancelado'
+
+    order = models.ForeignKey(
+        Order,
+        related_name='items',
+        on_delete=models.CASCADE
+    )
+
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.PROTECT
+    )
+
+    price_at_purchase = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    cancellation_status = models.CharField(
+        max_length=20,
+        choices=CancellationStatus.choices,
+        default=CancellationStatus.NONE
+    )
 
     def __str__(self):
         return f"{self.course.title} (Orden #{self.order.id})"

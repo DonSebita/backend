@@ -293,62 +293,67 @@ class OrderStatusUpdateAPIView(views.APIView):
         )
 
 class CancellationRequestAPIView(views.APIView):
-
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
 
-        order = get_object_or_404(
-            Order,
+        # Buscar el curso/matrícula específica
+        # y comprobar que pertenece al usuario conectado
+        item = get_object_or_404(
+            OrderItem,
             pk=pk,
-            user=request.user
+            order__user=request.user
         )
 
-        # Solo se puede solicitar cancelar una matrícula PAGADA
-        if order.status != Order.Status.PAGADO:
+        # La orden debe estar pagada
+        if item.order.status != Order.Status.PAGADO:
             return Response(
                 {
-                    "error": "Solo puedes solicitar la cancelación de matrículas pagadas."
+                    "error": "Solo puedes solicitar la cancelación de una matrícula pagada."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Ya existe una solicitud
-        if (
-            order.cancellation_status
-            == Order.CancellationStatus.REQUESTED
-        ):
+        # Ya existe una solicitud pendiente
+        if item.cancellation_status == OrderItem.CancellationStatus.REQUESTED:
             return Response(
                 {
-                    "error": "Ya existe una solicitud de cancelación pendiente."
+                    "error": "Ya existe una solicitud de cancelación pendiente para este curso."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        order.cancellation_status = (
-            Order.CancellationStatus.REQUESTED
+        # Ya fue cancelado
+        if item.cancellation_status == OrderItem.CancellationStatus.APPROVED:
+            return Response(
+                {
+                    "error": "Este curso ya fue cancelado."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Crear solicitud
+        item.cancellation_status = (
+            OrderItem.CancellationStatus.REQUESTED
         )
 
-        order.save()
-
-        serializer = OrderSerializer(order)
+        item.save(
+            update_fields=['cancellation_status']
+        )
 
         return Response(
             {
-                "message": "Solicitud de cancelación enviada correctamente.",
-                "order": serializer.data
+                "message": "Solicitud de cancelación enviada correctamente."
             },
             status=status.HTTP_200_OK
         )
 
 class CancellationDecisionAPIView(views.APIView):
-
     permission_classes = [permissions.IsAuthenticated]
 
     def patch(self, request, pk):
 
         # Solo Coordinador o SuperAdmin
-
         if (
             not request.user.is_superuser
             and request.user.role != 'COORDINATOR'
@@ -363,35 +368,30 @@ class CancellationDecisionAPIView(views.APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-
-        order = get_object_or_404(
-            Order,
+        # Buscar el OrderItem específico
+        item = get_object_or_404(
+            OrderItem,
             pk=pk
         )
 
-
-        # Verificar solicitud
-
+        # Debe existir una solicitud pendiente
         if (
-            order.cancellation_status
-            != Order.CancellationStatus.REQUESTED
+            item.cancellation_status
+            != OrderItem.CancellationStatus.REQUESTED
         ):
             return Response(
                 {
                     "error": (
-                        "Esta orden no tiene una "
+                        "Este curso no tiene una "
                         "solicitud de cancelación pendiente."
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         decision = request.data.get('decision')
 
-
         if decision not in ['APPROVE', 'REJECT']:
-
             return Response(
                 {
                     "error": (
@@ -401,7 +401,6 @@ class CancellationDecisionAPIView(views.APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
         try:
 
@@ -413,48 +412,55 @@ class CancellationDecisionAPIView(views.APIView):
 
                 if decision == 'APPROVE':
 
-                    if order.status != Order.Status.PAGADO:
+                    order = item.order
 
+                    if order.status != Order.Status.PAGADO:
                         raise ValueError(
                             "La orden ya no se encuentra pagada."
                         )
 
-
-                    for item in order.items.all():
-
-                        course = Course.objects.select_for_update().get(
-                            id=item.course.id
-                        )
-
-                        # Devolver cupo
-
-                        course.available_capacity += 1
-
-                        course.save()
-
-
-                    order.status = Order.Status.CANCELADO
-
-                    order.cancellation_status = (
-                        Order.CancellationStatus.NONE
+                    # Obtener el curso bloqueando la fila
+                    course = Course.objects.select_for_update().get(
+                        id=item.course.id
                     )
 
+                    # Devolver SOLO el cupo de este curso
+                    course.available_capacity += 1
 
-                    order.save()
+                    course.save(
+                        update_fields=['available_capacity']
+                    )
 
+                    # Marcar SOLO este OrderItem como cancelado
+                    item.cancellation_status = (
+                        OrderItem.CancellationStatus.APPROVED
+                    )
+
+                    item.save(
+                        update_fields=['cancellation_status']
+                    )
+
+                    mensaje = (
+                        "Cancelación aprobada."
+                    )
 
                 # =========================================
                 # RECHAZAR
                 # =========================================
 
-                elif decision == 'REJECT':
+                else:
 
-                    order.cancellation_status = (
-                        Order.CancellationStatus.REJECTED
+                    item.cancellation_status = (
+                        OrderItem.CancellationStatus.REJECTED
                     )
 
-                    order.save()
+                    item.save(
+                        update_fields=['cancellation_status']
+                    )
 
+                    mensaje = (
+                        "Solicitud de cancelación rechazada."
+                    )
 
         except ValueError as e:
 
@@ -465,10 +471,9 @@ class CancellationDecisionAPIView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
-        serializer = OrderSerializer(order)
-
         return Response(
-            serializer.data,
+            {
+                "message": mensaje
+            },
             status=status.HTTP_200_OK
         )

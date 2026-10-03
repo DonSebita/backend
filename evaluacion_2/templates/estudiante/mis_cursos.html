@@ -35,34 +35,39 @@ Mis cursos | EdTech
 
         {% for item in orden.items.all %}
 
-        <article class="bg-slate-900
-                               border border-slate-800
-                               rounded-2xl
-                               overflow-hidden">
+        <article
+            class="bg-slate-900
+                   border border-slate-800
+                   rounded-2xl
+                   overflow-hidden"
+        >
 
             <div class="p-6">
 
                 <!-- CABECERA -->
 
-                <div class="flex flex-col md:flex-row
-                                        md:items-start
-                                        md:justify-between
-                                        gap-4">
+                <div
+                    class="flex flex-col
+                           md:flex-row
+                           md:items-start
+                           md:justify-between
+                           gap-4"
+                >
 
                     <div>
 
                         <p class="text-xs
-                                              text-indigo-400
-                                              font-semibold
-                                              uppercase">
+                                  text-indigo-400
+                                  font-semibold
+                                  uppercase">
 
                             Matrícula #{{ orden.id }}
 
                         </p>
 
                         <h2 class="text-2xl
-                                               font-bold
-                                               mt-2">
+                                   font-bold
+                                   mt-2">
 
                             {{ item.course.title }}
 
@@ -82,62 +87,86 @@ Mis cursos | EdTech
 
                     <div>
 
-                        {% if orden.status == 'PAGADO' %}
+                        {% if item.cancellation_status == 'APPROVED' %}
 
-                        {% if orden.cancellation_status == 'REQUESTED' %}
+                        <span
+                            class="px-3 py-2
+                                   rounded-full
+                                   text-xs
+                                   font-semibold
+                                   bg-red-500/20
+                                   text-red-300"
+                        >
+                            Curso cancelado
+                        </span>
 
-                        <span class="px-3 py-2
-                                                       rounded-full
-                                                       text-xs
-                                                       font-semibold
-                                                       bg-yellow-500/20
-                                                       text-yellow-300">
+
+                        {% elif item.cancellation_status == 'REQUESTED' %}
+
+                        <span
+                            class="px-3 py-2
+                                   rounded-full
+                                   text-xs
+                                   font-semibold
+                                   bg-yellow-500/20
+                                   text-yellow-300"
+                        >
                             Cancelación solicitada
                         </span>
 
-                        {% elif orden.cancellation_status == 'REJECTED' %}
 
-                        <span class="px-3 py-2
-                                                       rounded-full
-                                                       text-xs
-                                                       font-semibold
-                                                       bg-orange-500/20
-                                                       text-orange-300">
+                        {% elif item.cancellation_status == 'REJECTED' %}
+
+                        <span
+                            class="px-3 py-2
+                                   rounded-full
+                                   text-xs
+                                   font-semibold
+                                   bg-orange-500/20
+                                   text-orange-300"
+                        >
                             Cancelación rechazada
                         </span>
 
-                        {% else %}
 
-                        <span class="px-3 py-2
-                                                       rounded-full
-                                                       text-xs
-                                                       font-semibold
-                                                       bg-green-500/20
-                                                       text-green-300">
+                        {% elif orden.status == 'PAGADO' %}
+
+                        <span
+                            class="px-3 py-2
+                                   rounded-full
+                                   text-xs
+                                   font-semibold
+                                   bg-green-500/20
+                                   text-green-300"
+                        >
                             PAGADO
                         </span>
 
-                        {% endif %}
 
                         {% elif orden.status == 'PENDIENTE' %}
 
-                        <span class="px-3 py-2
-                                                   rounded-full
-                                                   text-xs
-                                                   font-semibold
-                                                   bg-yellow-500/20
-                                                   text-yellow-300">
+                        <span
+                            class="px-3 py-2
+                                   rounded-full
+                                   text-xs
+                                   font-semibold
+                                   bg-yellow-500/20
+                                   text-yellow-300"
+                        >
                             PENDIENTE
                         </span>
 
+
                         {% elif orden.status == 'CANCELADO' %}
 
-                        <span class="px-3 py-2
-                                                   rounded-full
-                                                   text-xs
-                                                   font-semibold
-                                                   bg-red-500/20
-                                                   text-red-300">
+                        <span
+                            class="px-3 py-2
+                                   rounded-full
+                                   text-xs
+                                   font-semibold
+                                   bg-red-500/20
+                                   text-red-300"
+                        >
                             CANCELADO
                         </span>
 
@@ -150,17 +179,18 @@ Mis cursos | EdTech
 
                 <!-- INFORMACIÓN DEL CURSO -->
 
-                <div class="grid md:grid-cols-3
-                                       gap-4
-                                       mt-6
-                                       pt-6
-                                       border-t
-                                       border-slate-800">
+                <div
+                    class="grid md:grid-cols-3
+                           gap-4
+                           mt-6
+                           pt-6
+                           border-t
+                           border-slate-800"
+                >
 
                     <div>
 
-                        <p class="text-xs
-                                              text-slate-500">
+                        <p class="text-xs text-slate-500">
                             Inicio
                         </p>
 
@@ -173,8 +203,7 @@ Mis cursos | EdTech
 
                     <div>
 
-                        <p class="text-xs
-                                              text-slate-500">
+                        <p class="text-xs text-slate-500">
                             Término
                         </p>
 
@@ -187,8 +216,7 @@ Mis cursos | EdTech
 
                     <div>
 
-                        <p class="text-xs
-                                              text-slate-500">
+                        <p class="text-xs text-slate-500">
                             Precio
                         </p>
 
@@ -205,16 +233,22 @@ Mis cursos | EdTech
 
                 <div class="mt-6">
 
-                    {% if orden.status == 'PAGADO' %}
+                    {% if item.cancellation_status == 'APPROVED' %}
 
-                    {% if orden.cancellation_status == 'REQUESTED' %}
+                    <p class="text-red-400 text-sm">
+                        Este curso fue cancelado y el cupo fue liberado.
+                    </p>
+
+
+                    {% elif item.cancellation_status == 'REQUESTED' %}
 
                     <p class="text-yellow-400 text-sm">
                         Tu solicitud está siendo revisada
-                        por soporte.
+                        por el coordinador.
                     </p>
 
-                    {% elif orden.cancellation_status == 'REJECTED' %}
+
+                    {% elif item.cancellation_status == 'REJECTED' %}
 
                     <div>
 
@@ -222,32 +256,37 @@ Mis cursos | EdTech
                             Tu solicitud anterior fue rechazada.
                         </p>
 
-                        <button onclick="solicitarCancelacion({{ orden.id }})" class="px-4 py-2
-                                                       bg-red-600/20
-                                                       hover:bg-red-600/30
-                                                       text-red-400
-                                                       rounded-lg
-                                                       text-sm
-                                                       font-semibold">
+                        <button
+                            onclick="solicitarCancelacion({{ item.id }})"
+                            class="px-4 py-2
+                                   bg-red-600/20
+                                   hover:bg-red-600/30
+                                   text-red-400
+                                   rounded-lg
+                                   text-sm
+                                   font-semibold"
+                        >
                             Solicitar cancelación nuevamente
                         </button>
 
                     </div>
 
-                    {% else %}
 
-                    <button onclick="solicitarCancelacion({{ orden.id }})" class="px-4 py-2
-                                                   bg-slate-800
-                                                   hover:bg-red-600/20
-                                                   hover:text-red-400
-                                                   rounded-lg
-                                                   text-sm
-                                                   font-semibold
-                                                   transition">
+                    {% elif orden.status == 'PAGADO' %}
+
+                    <button
+                        onclick="solicitarCancelacion({{ item.id }})"
+                        class="px-4 py-2
+                               bg-slate-800
+                               hover:bg-red-600/20
+                               hover:text-red-400
+                               rounded-lg
+                               text-sm
+                               font-semibold
+                               transition"
+                    >
                         Solicitar cancelación
                     </button>
-
-                    {% endif %}
 
 
                     {% elif orden.status == 'PENDIENTE' %}
@@ -281,20 +320,25 @@ Mis cursos | EdTech
 
     {% else %}
 
-    <div class="border border-dashed
-                   border-slate-700
-                   rounded-xl
-                   p-12
-                   text-center">
+    <div
+        class="border border-dashed
+               border-slate-700
+               rounded-xl
+               p-12
+               text-center"
+    >
 
         <p class="text-slate-500">
             Todavía no tienes matrículas.
         </p>
 
-        <a href="{% url 'lista_cursos' %}" class="inline-block
-                       mt-4
-                       text-indigo-400
-                       hover:text-indigo-300">
+        <a
+            href="{% url 'lista_cursos' %}"
+            class="inline-block
+                   mt-4
+                   text-indigo-400
+                   hover:text-indigo-300"
+        >
             Explorar cursos →
         </a>
 
@@ -307,59 +351,61 @@ Mis cursos | EdTech
 
 <script>
 
-    function solicitarCancelacion(orderId) {
+function solicitarCancelacion(itemId) {
 
-        const confirmar = confirm(
-            "¿Estás seguro de que quieres solicitar la cancelación de esta matrícula?"
-        );
+    const confirmar = confirm(
+        "¿Estás seguro de que quieres solicitar la cancelación de este curso?"
+    );
 
-        if (!confirmar) {
+    if (!confirmar) {
+        return;
+    }
+
+
+    fetch(
+        `/api/ordenes/items/${itemId}/solicitar-cancelacion/`,
+        {
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+
+            credentials: 'same-origin'
+        }
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        console.log("Respuesta:", data);
+
+        if (data.error) {
+
+            alert(data.error);
+
             return;
         }
 
+        alert(data.message);
 
-        fetch(
-            `/api/ordenes/${orderId}/solicitar-cancelacion/`,
-            {
-                method: 'POST',
+        location.reload();
 
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
+    })
 
-                credentials: 'same-origin'
-            }
-        )
+    .catch(error => {
 
-            .then(response => response.json())
+        console.error(error);
 
-            .then(data => {
+        alert(
+            "Ocurrió un error al enviar la solicitud."
+        );
 
-                if (data.error) {
+    });
 
-                    alert(data.error);
-
-                    return;
-                }
-
-                alert(data.message);
-
-                location.reload();
-
-            })
-
-            .catch(error => {
-
-                console.error(error);
-
-                alert(
-                    "Ocurrió un error al enviar la solicitud."
-                );
-
-            });
-
-    }
+}
 
 </script>
 
