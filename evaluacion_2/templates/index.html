@@ -46,41 +46,114 @@ EdTech | Aprende nuevas habilidades
         <div class="hidden lg:block">
           <div class="relative">
             <div class="absolute inset-0 bg-indigo-600/20 blur-3xl rounded-full"></div>
-            <div
-              class="relative bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl transition-all duration-500 hover:border-indigo-500/50"
-              id="hero-card-container">
+              <div
+                class="relative bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl transition-all duration-500 hover:border-indigo-500/50"
+                id="hero-card-container">
 
-              <div class="flex items-center justify-between mb-6">
-                <div>
-                  <p class="text-sm text-slate-500">Curso destacado</p>
-                  <h3 class="text-xl font-bold mt-1 transition-opacity duration-500" id="hero-curso-titulo">
-                    Desarrollo Web Moderno
-                  </h3>
+                <div class="flex items-center justify-between mb-6">
+                  <div>
+                    <p class="text-sm text-slate-500">Curso destacado</p>
+
+                    <h3 class="text-xl font-bold mt-1">
+                      {% if curso_destacado %}
+                        {{ curso_destacado.title }}
+                      {% else %}
+                        Desarrollo Web Moderno
+                      {% endif %}
+                    </h3>
+                  </div>
+
+                  <span class="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-sm">
+                    {% if curso_destacado %}
+                      Disponible
+                    {% else %}
+                      Nuevo
+                    {% endif %}
+                  </span>
                 </div>
-                <span
-                  class="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-sm transition-opacity duration-500"
-                  id="hero-curso-etiqueta">
-                  Nuevo
-                </span>
-              </div>
 
-              <div class="h-52 rounded-2xl overflow-hidden mb-6 relative group">
-                <img src="https://picsum.photos/seed/edtech-hero-1/900/500" alt="Curso destacado"
-                  class="w-full h-full object-cover transition-opacity duration-500" id="hero-curso-imagen">
-              </div>
+                <!-- Imagen -->
+                <div class="h-52 rounded-2xl overflow-hidden mb-6 relative group">
 
-              <div class="flex items-center justify-between transition-opacity duration-500" id="hero-curso-footer">
-                <div>
-                  <p class="text-sm text-slate-500">Instructor</p>
-                  <p class="font-medium" id="hero-curso-instructor">Equipo EdTech</p>
+                  {% if curso_destacado %}
+
+                    <img
+                      src="https://picsum.photos/seed/course-{{ curso_destacado.id }}/900/500"
+                      alt="{{ curso_destacado.title }}"
+                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+
+                  {% else %}
+
+                    <img
+                      src="https://picsum.photos/seed/edtech-hero-1/900/500"
+                      alt="Curso destacado"
+                      class="w-full h-full object-cover">
+
+                  {% endif %}
+
                 </div>
-                <div class="text-right">
-                  <p class="text-sm text-slate-500">Desde</p>
-                  <p class="text-2xl font-bold text-indigo-400" id="hero-curso-precio">$29.990</p>
-                </div>
-              </div>
 
-            </div>
+                <!-- Información -->
+                <div class="flex items-center justify-between">
+
+                  <div>
+                    <p class="text-sm text-slate-500">Instructor</p>
+
+                    <p class="font-medium">
+                      {% if curso_destacado and curso_destacado.instructor %}
+                        {{ curso_destacado.instructor.get_full_name }}
+                      {% else %}
+                        Equipo EdTech
+                      {% endif %}
+                    </p>
+                  </div>
+
+                  <div class="text-right">
+                    <p class="text-sm text-slate-500">
+                      {% if curso_destacado %}
+                        Precio
+                      {% else %}
+                        Desde
+                      {% endif %}
+                    </p>
+
+                    <p class="text-2xl font-bold text-indigo-400">
+
+                      {% if curso_destacado %}
+                        ${{ curso_destacado.enrollment_cost }}
+                      {% else %}
+                        $29.990
+                      {% endif %}
+
+                    </p>
+                  </div>
+
+                </div>
+
+                <!-- Botón -->
+                <div class="mt-6">
+
+                  {% if curso_destacado %}
+
+                    <a
+                      href="{% url 'detalle_curso' curso_destacado.id %}"
+                      class="block w-full text-center bg-indigo-600 hover:bg-indigo-500 px-4 py-3 rounded-xl font-semibold transition">
+                      Ver curso
+                    </a>
+
+                  {% else %}
+
+                    <a
+                      href="{% url 'lista_cursos' %}"
+                      class="block w-full text-center bg-indigo-600 hover:bg-indigo-500 px-4 py-3 rounded-xl font-semibold transition">
+                      Explorar cursos
+                    </a>
+
+                  {% endif %}
+
+                </div>
+
+              </div>
           </div>
         </div>
   </section>

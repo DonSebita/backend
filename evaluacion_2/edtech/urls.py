@@ -1,11 +1,11 @@
 from drf_spectacular import views
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from courses.views import lista_cursos, detalle_curso
 from edtech.views import (
     # Públicas
-    index, login_view, register_view, logout_view, lista_cursos,
+    index, login_view, register_view, logout_view, lista_cursos,error_404_view,
     # Estudiante
     estudiante_dashboard, estudiante_perfil, estudiante_carrito,
     carrito_agregar, carrito_eliminar, checkout_html, estudiante_mis_cursos,
@@ -72,4 +72,6 @@ urlpatterns = [
     # ── Documentación OpenAPI / Swagger ─────────────────────────────
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    re_path(r'^.*$', error_404_view, name='error_404'),
 ]

@@ -10,6 +10,9 @@ from users.models import User
 from users.forms import UsuarioForm
 from enrollments.models import Order
 
+def error_404_view(request, exception=None):
+    return render(request, '404.html', status=404)
+
 # ─── Contexto compartido del footer ──────────────────────────────────────────
 FOOTER = {
     'nombre': 'Sebastian Lucas Eduardo Sandoval',
@@ -86,12 +89,20 @@ class InstructorForm(forms.ModelForm):
 # ─── PÚBLICAS ─────────────────────────────────────────────────────────────────
 
 def index(request):
-    """Página de inicio: muestra únicamente el catálogo de categorías (áreas)."""
+    """Página de inicio."""
+
     areas = Area.objects.all()
-    
+
+    # Curso destacado:
+    # toma el último curso creado.
+    curso_destacado = Course.objects.select_related(
+        'instructor'
+    ).order_by('-id').first()
+
     return render(request, 'index.html', {
         'areas': areas,
-        # **FOOTER, (si aún usas este diccionario global)
+        'curso_destacado': curso_destacado,
+        **FOOTER,
     })
 
 def lista_cursos(request):
